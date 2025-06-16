@@ -16,15 +16,16 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = '>= 3.0.0'
 
-  spec.add_dependency 'activesupport'
-  spec.add_dependency 'faraday'
-  spec.add_dependency 'mime-types'
+  spec.add_dependency 'activesupport', '~> 8.0', '>= 8.0.2'
+  spec.add_dependency 'faraday', '~> 2.13', '>= 2.13.1'
+  spec.add_dependency 'faraday-multipart', '~> 1.1'
+  spec.add_dependency 'mime-types', '~> 3.7'
 
-  spec.add_development_dependency 'bundler', '~> 1.7'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.0.0'
-  spec.add_development_dependency 'vcr'
-  spec.add_development_dependency 'webmock', '~> 1.18.0'
+  spec.add_development_dependency 'bundler', '~> 2.6', '>= 2.6.9'
+  spec.add_development_dependency 'rake', '~> 13.3'
+  spec.add_development_dependency 'rspec', '~> 3.13', '>= 3.13.1'
+  spec.add_development_dependency 'vcr', '~> 6.3', '>= 6.3.1'
+  spec.add_development_dependency 'webmock', '~> 3.25', '>= 3.25.1'
 end

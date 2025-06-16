@@ -1,4 +1,5 @@
 require 'faraday'
+require 'faraday/multipart'
 require 'json'
 require 'openssl'
 require 'active_support/all'
@@ -12,12 +13,14 @@ module UpwoofListings
     include Errors
     include Utils
 
-    URL = 'https://www.upwoof.com/api/v1/'
     REQUESTS = %i[get post put delete]
     HEADERS = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
 
-    def initialize
-      # Setup HTTP request connection to Zenodo.
+    def initialize(api_key = UpwoofListings.api_key, url = UpwoofListings.url)
+      @api_key = api_key
+      @url = url
+
+      # Setup HTTP request connection to UpWoof.
       @connection ||= Faraday.new do |builder|
         builder.request :multipart
         builder.request :url_encoded
@@ -40,6 +43,7 @@ module UpwoofListings
               "Unsupported method #{method.inspect}. Only :get, :post, :put, :delete are allowed"
       end
 
+      token_url = UrlHelper.build_url(path: "#{@url}#{path}", params: {access_token: @api_key})
       payload = nil
       if query.present?
         accept = headers.present? ? headers['Accept'] : nil
@@ -49,7 +53,7 @@ module UpwoofListings
                     query
                   end
       end
-      response = @connection.run_request(method, "#{URL}#{path}", payload, headers)
+      response = @connection.run_request(method, token_url, payload, headers)
 
       case response.status.to_i
       when 200..299

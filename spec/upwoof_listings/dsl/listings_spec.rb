@@ -16,7 +16,7 @@ describe UpwoofListings::DSL::Listings do
   describe '#get_listing' do
     it 'returns a listing' do
       VCR.use_cassette('get_listing') do
-        expect(UpwoofListings.client.get_protocol(id: 1)).to be_a(Listing)
+        expect(UpwoofListings.client.get_listing(id: 1)).to be_a(Listing)
       end
     end
   end

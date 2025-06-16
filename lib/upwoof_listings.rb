@@ -10,13 +10,16 @@ module UpwoofListings
   class << self
     # @return [String]
     attr_accessor :api_key
+    attr_accessor :url
     attr_accessor :logger
   end
+
+  self.url = 'https://www.upwoof.com/api/v1/'
 
   module_function
 
   # @return [UpwoofListings::Client]
   def client
-    @client ||= Client.new
+    @client ||= Client.new(UpwoofListings.api_key, UpwoofListings.url)
   end
 end

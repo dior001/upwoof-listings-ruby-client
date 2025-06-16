@@ -5,7 +5,7 @@ module UpwoofListings
     # GET /Listings
     # Get listings.
     # @return [Array, nil].
-    def get_protocols
+    def get_listings
       Resources::Listing.parse(request(:get, 'listings/', nil, nil))
     end
 
@@ -14,7 +14,7 @@ module UpwoofListings
     # @param [String] id A listing's ID.
     # @raise [ArgumentError] If the method arguments are blank.
     # @return [UpwoofListings::Resources::listing, nil].
-    def get_protocol(id:)
+    def get_listing(id:)
       raise ArgumentError, 'ID cannot be blank' if id.blank?
 
       Resources::Listing.parse(request(:get, "listings/#{id}"))
