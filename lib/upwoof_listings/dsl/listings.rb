@@ -13,7 +13,7 @@ module UpwoofListings
     # Get a listing.
     # @param [String] id A listing's ID.
     # @raise [ArgumentError] If the method arguments are blank.
-    # @return [UpwoofListings::Resources::listing, nil].
+    # @return [UpwoofListings::Resources::Listing, nil].
     def get_listing(id:)
       raise ArgumentError, 'ID cannot be blank' if id.blank?
 
