@@ -10,8 +10,7 @@ module UpwoofListings
   class << self
     # @return [String]
     attr_accessor :api_key
-    attr_accessor :url
-    attr_accessor :logger
+    attr_accessor :url, :logger
   end
 
   self.url = 'https://www.upwoof.com/api/v1/'
