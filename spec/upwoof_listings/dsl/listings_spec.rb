@@ -15,8 +15,13 @@ describe UpwoofListings::DSL::Listings do
   # GET /listings/{id}
   describe '#get_listing' do
     it 'returns a listing' do
+      id = VCR.use_cassette('get_listings') do
+        listings = UpwoofListings.client.get_listings
+        listings.first['id']
+      end
+
       VCR.use_cassette('get_listing') do
-        expect(UpwoofListings.client.get_listing(id: 1)).to be_a(Listing)
+        expect(UpwoofListings.client.get_listing(id:)).to be_a(Listing)
       end
     end
   end
