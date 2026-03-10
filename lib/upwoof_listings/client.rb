@@ -13,7 +13,7 @@ module UpwoofListings
     include Errors
     include Utils
 
-    REQUESTS = %i[get post put delete]
+    REQUESTS = %i[get post put patch delete]
     HEADERS = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
 
     def initialize(api_key = UpwoofListings.api_key, url = UpwoofListings.url)
@@ -29,7 +29,7 @@ module UpwoofListings
       end
     end
 
-    # @param [:get, :post, :put, :delete] method.
+    # @param [:get, :post, :put, :patch, :delete] method.
     # @param [String] path.
     # @param [Hash] query (optional).
     # @param [Hash] headers request headers (optional).
@@ -40,7 +40,7 @@ module UpwoofListings
     def request(method, path, query = {}, headers = HEADERS)
       unless REQUESTS.include?(method)
         raise ArgumentError,
-              "Unsupported method #{method.inspect}. Only :get, :post, :put, :delete are allowed"
+              "Unsupported method #{method.inspect}. Only :get, :post, :put, :patch, :delete are allowed"
       end
 
       token_url = UrlHelper.build_url(path: "#{@url}#{path}", params: { access_token: @api_key })

@@ -19,5 +19,45 @@ module UpwoofListings
 
       Resources::Order.parse(request(:get, "orders/#{id}"))
     end
+
+    # POST /orders
+    # Create an order.
+    # @param [Hash] params Order attributes.
+    # @return [UpwoofListings::Resources::Order, nil].
+    def create_order(params:)
+      Resources::Order.parse(request(:post, 'orders/', params))
+    end
+
+    # PUT /orders/{id}
+    # Update an order.
+    # @param [String] id An order's ID.
+    # @param [Hash] params Order attributes.
+    # @return [UpwoofListings::Resources::Order, nil].
+    def update_order(id:, params:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::Order.parse(request(:put, "orders/#{id}", params))
+    end
+
+    # PATCH /orders/{id}
+    # Partially update an order.
+    # @param [String] id An order's ID.
+    # @param [Hash] params Order attributes.
+    # @return [UpwoofListings::Resources::Order, nil].
+    def patch_order(id:, params:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::Order.parse(request(:patch, "orders/#{id}", params))
+    end
+
+    # DELETE /orders/{id}
+    # Delete an order.
+    # @param [String] id An order's ID.
+    # @return [Boolean].
+    def delete_order(id:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      request(:delete, "orders/#{id}").status == 204
+    end
   end
 end
