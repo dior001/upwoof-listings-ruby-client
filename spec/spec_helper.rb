@@ -6,6 +6,7 @@ include UpwoofListings::Resources
 APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 cnf = YAML.load_file(File.join(APP_ROOT, 'config/gem_secret.yml'))
 upwoof_listings_api_key = cnf['upwoof_listings_api_key']
+upwoof_listings_url = cnf['upwoof_listings_url']
 
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
@@ -16,5 +17,6 @@ end
 RSpec.configure do |config|
   config.before do
     UpwoofListings.api_key = upwoof_listings_api_key
+    UpwoofListings.url = upwoof_listings_url
   end
 end
