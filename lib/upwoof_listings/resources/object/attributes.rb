@@ -32,6 +32,7 @@ module UpwoofListings::Resources::Object::Attributes
 
   def self.included(base)
     base.extend(ClassMethods)
+    base.send(:include, base.attributes_module)
     super
   end
 

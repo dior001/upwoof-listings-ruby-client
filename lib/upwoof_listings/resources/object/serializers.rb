@@ -67,9 +67,9 @@ module UpwoofListings
               attributes = JSON.parse(response.body)
               case attributes
               when Array
-                return attributes.map { |object| new(object) }
+                return attributes.map { |object| new(object.deep_transform_keys { |key| key.to_s.downcase }) }
               when Hash
-                return new(attributes)
+                return new(attributes.deep_transform_keys { |key| key.to_s.downcase })
               end
             rescue JSON::ParserError
               logger = Logger.new(STDOUT)
