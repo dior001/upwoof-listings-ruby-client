@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Reservations
     # GET /Reservations
     # Get reservations.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_reservations
-      Resources::Reservation.parse(request(:get, 'reservations/', nil, nil))
+    def get_reservations(params: nil)
+      Resources::Reservation.parse(request(:get, 'reservations/', params, nil))
     end
 
     # GET /Reservation/{id}

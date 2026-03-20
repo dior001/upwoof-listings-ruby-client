@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Listings
     # GET /Listings
     # Get listings.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_listings
-      Resources::Listing.parse(request(:get, 'listings/', nil, nil))
+    def get_listings(params: nil)
+      Resources::Listing.parse(request(:get, 'listings/', params, nil))
     end
 
     # GET /Listing/{id}

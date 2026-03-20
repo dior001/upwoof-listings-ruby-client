@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::CreditNotes
     # GET /CreditNotes
     # Get credit notes.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_credit_notes
-      Resources::CreditNote.parse(request(:get, 'credit_notes/', nil, nil))
+    def get_credit_notes(params: nil)
+      Resources::CreditNote.parse(request(:get, 'credit_notes/', params, nil))
     end
 
     # GET /CreditNote/{id}

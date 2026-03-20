@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::AnimalTypes
     # GET /animal_types
     # Get animal types.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_animal_types
-      Resources::AnimalType.parse(request(:get, 'animal_types/', nil, nil))
+    def get_animal_types(params: nil)
+      Resources::AnimalType.parse(request(:get, 'animal_types/', params, nil))
     end
 
     # GET /animal_types/{id}

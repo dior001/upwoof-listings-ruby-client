@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Accommodations
     # GET /Accommodations
     # Get accommodations.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_accommodations
-      Resources::Accommodation.parse(request(:get, 'accommodations/', nil, nil))
+    def get_accommodations(params: nil)
+      Resources::Accommodation.parse(request(:get, 'accommodations/', params, nil))
     end
 
     # GET /Accommodation/{id}

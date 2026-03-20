@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Customers
     # GET /Customers
     # Get customers.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_customers
-      Resources::Customer.parse(request(:get, 'customers/', nil, nil))
+    def get_customers(params: nil)
+      Resources::Customer.parse(request(:get, 'customers/', params, nil))
     end
 
     # GET /Customer/{id}

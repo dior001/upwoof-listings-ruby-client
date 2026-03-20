@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Pets
     # GET /Pets
     # Get pets.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_pets
-      Resources::Pet.parse(request(:get, 'pets/', nil, nil))
+    def get_pets(params: nil)
+      Resources::Pet.parse(request(:get, 'pets/', params, nil))
     end
 
     # GET /Pet/{id}

@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Invoices
     # GET /Invoices
     # Get invoices.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_invoices
-      Resources::Invoice.parse(request(:get, 'invoices/', nil, nil))
+    def get_invoices(params: nil)
+      Resources::Invoice.parse(request(:get, 'invoices/', params, nil))
     end
 
     # GET /Invoice/{id}

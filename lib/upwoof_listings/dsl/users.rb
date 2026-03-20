@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Users
     # GET /Users
     # Get users.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_users
-      Resources::User.parse(request(:get, 'users/', nil, nil))
+    def get_users(params: nil)
+      Resources::User.parse(request(:get, 'users/', params, nil))
     end
 
     # GET /users/me

@@ -10,6 +10,14 @@ describe UpwoofListings::DSL::Accommodations do
         expect(accommodations.first).to be_a(Accommodation)
       end
     end
+
+    it 'passes query parameters' do
+      params = { listing_id: 123 }
+      stub_request(:get, "#{UpwoofListings.url.chomp('/')}/accommodations/?access_token=#{UpwoofListings.api_key}&listing_id=123")
+        .to_return(status: 200, body: [].to_json, headers: { 'Content-Type' => 'application/json' })
+
+      UpwoofListings.client.get_accommodations(params: params)
+    end
   end
 
   # GET /accommodations/{id}

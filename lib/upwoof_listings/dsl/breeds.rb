@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Breeds
     # GET /breeds
     # Get breeds.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_breeds
-      Resources::Breed.parse(request(:get, 'breeds/', nil, nil))
+    def get_breeds(params: nil)
+      Resources::Breed.parse(request(:get, 'breeds/', params, nil))
     end
 
     # GET /breeds/{id}

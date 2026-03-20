@@ -4,9 +4,10 @@ module UpwoofListings
   module DSL::Orders
     # GET /Orders
     # Get orders.
+    # @param [Hash] params (optional) A hash of query parameters.
     # @return [Array, nil].
-    def get_orders
-      Resources::Order.parse(request(:get, 'orders/', nil, nil))
+    def get_orders(params: nil)
+      Resources::Order.parse(request(:get, 'orders/', params, nil))
     end
 
     # GET /Order/{id}

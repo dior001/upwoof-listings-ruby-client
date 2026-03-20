@@ -43,9 +43,11 @@ module UpwoofListings
               "Unsupported method #{method.inspect}. Only :get, :post, :put, :patch, :delete are allowed"
       end
 
-      token_url = UrlHelper.build_url(path: "#{@url}#{path}", params: { access_token: @api_key })
+      params = { access_token: @api_key }
+      params.merge!(query) if method == :get && query.is_a?(Hash)
+      token_url = UrlHelper.build_url(path: "#{@url}#{path}", params: params)
       payload = nil
-      if query.present?
+      if query.present? && method != :get
         accept = headers.present? ? headers['Accept'] : nil
         payload = if accept.present? && accept == 'application/json'
                     JSON.generate(query)
