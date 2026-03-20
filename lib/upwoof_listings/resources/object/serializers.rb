@@ -92,7 +92,7 @@ module UpwoofListings
         def serialize
           {}.tap do |result|
             attributes.each do |name, value|
-              result[name.upcase] = self.class.serializer_for(name).serialize(value)
+              result[name.to_s.downcase] = self.class.serializer_for(name).serialize(value)
             end
           end
         end

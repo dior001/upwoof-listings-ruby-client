@@ -45,7 +45,7 @@ module UpwoofListings::Resources::Object::Attributes
   end
 
   def method_missing(name, *args, &block)
-    attribute = name.to_s.upcase
+    attribute = name.to_s.downcase
     if __getobj__.key?(attribute)
       self.class.define_attribute_accessor(name)
       deserialize_attribute(name, self.class.attributes[name.to_sym])
@@ -57,13 +57,13 @@ module UpwoofListings::Resources::Object::Attributes
   private
 
   def respond_to_missing?(name, include_all = false)
-    __getobj__.key?(name.to_s.upcase) || super(name, include_all)
+    __getobj__.key?(name.to_s.downcase) || super(name, include_all)
   end
 
   # @param [String, Symbol] name
   # @param [Class, #to_s] type
   def deserialize_attribute(name, type)
-    raw = __getobj__[name.to_s.upcase]
+    raw = __getobj__[name.to_s.downcase]
     self.class.serializer_for(type).deserialize(raw)
   end
 end
