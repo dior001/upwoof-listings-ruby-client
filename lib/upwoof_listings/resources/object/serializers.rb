@@ -11,9 +11,10 @@ module UpwoofListings
           def self.deserialize(value)
             case value
             when Array
-              value.map { |v| v.deep_transform_keys { |key| key.downcase } }
+              value.map { |v| deserialize(v) }
             when Hash
-              value.deep_transform_keys { |key| key.downcase }
+              # Ensure keys are downcased and wrap in Object
+              UpwoofListings::Resources::Object.new(value.deep_transform_keys { |key| key.to_s.downcase })
             else
               value
             end
