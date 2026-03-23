@@ -17,6 +17,7 @@ require 'upwoof_listings/dsl/users'
 require 'upwoof_listings/dsl/accommodation_types'
 require 'upwoof_listings/dsl/animal_types'
 require 'upwoof_listings/dsl/breeds'
+require 'upwoof_listings/dsl/uw_listing_cms_apps'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -34,6 +35,7 @@ module UpwoofListings
     include AccommodationTypes
     include AnimalTypes
     include Breeds
+    include UwListingCmsApps
     include Utils
   end
 end
