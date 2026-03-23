@@ -20,5 +20,45 @@ module UpwoofListings
 
       Resources::UwListingCmsApp.parse(request(:get, "uw_listing_cms_apps/#{id}"))
     end
+
+    # POST /uw_listing_cms_apps
+    # Create a CMS app.
+    # @param [Hash] params CMS app attributes.
+    # @return [UpwoofListings::Resources::UwListingCmsApp, nil].
+    def create_uw_listing_cms_app(params:)
+      Resources::UwListingCmsApp.parse(request(:post, 'uw_listing_cms_apps/', params))
+    end
+
+    # PUT /uw_listing_cms_apps/{id}
+    # Update a CMS app.
+    # @param [String] id A CMS app's ID.
+    # @param [Hash] params CMS app attributes.
+    # @return [UpwoofListings::Resources::UwListingCmsApp, nil].
+    def update_uw_listing_cms_app(id:, params:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::UwListingCmsApp.parse(request(:put, "uw_listing_cms_apps/#{id}", params))
+    end
+
+    # PATCH /uw_listing_cms_apps/{id}
+    # Partially update a CMS app.
+    # @param [String] id A CMS app's ID.
+    # @param [Hash] params CMS app attributes.
+    # @return [UpwoofListings::Resources::UwListingCmsApp, nil].
+    def patch_uw_listing_cms_app(id:, params:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::UwListingCmsApp.parse(request(:patch, "uw_listing_cms_apps/#{id}", params))
+    end
+
+    # DELETE /uw_listing_cms_apps/{id}
+    # Delete a CMS app.
+    # @param [String] id A CMS app's ID.
+    # @return [Boolean].
+    def delete_uw_listing_cms_app(id:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      request(:delete, "uw_listing_cms_apps/#{id}").status == 204
+    end
   end
 end
