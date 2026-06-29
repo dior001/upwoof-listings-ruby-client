@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['David Iorns']
   spec.email         = ['david.iorns@gmail.com']
   spec.summary       = 'A Ruby wrapper for the UpWoof Listings API. https://www.upwoof_listings.org/api_v1'
-  spec.homepage      = 'https://www.upwoof.com'
+  spec.homepage      = 'https://pethotels.upwoof.com'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
