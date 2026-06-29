@@ -19,7 +19,7 @@ Or install it yourself as:
     $ gem install upwoof_listings
 
 ## Documentation
-https://www.upwoof.com/api-docs/v1
+https://pethotels.upwoof.com/api-docs/v1
 
 ## Contributing
 
