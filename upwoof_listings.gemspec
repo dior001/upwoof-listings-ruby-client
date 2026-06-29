@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version       = UpwoofListings::VERSION
   spec.authors       = ['David Iorns']
   spec.email         = ['david.iorns@gmail.com']
-  spec.summary       = 'A Ruby wrapper for the UpWoof Listings API. https://www.upwoof_listings.org/api_v1'
+  spec.summary       = 'A Ruby wrapper for the UpWoof Listings API. https://pethotels.upwoof.com/api-docs/v1'
   spec.homepage      = 'https://pethotels.upwoof.com'
   spec.license       = 'MIT'
 
