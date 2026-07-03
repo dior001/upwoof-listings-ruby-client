@@ -13,6 +13,7 @@ require 'upwoof_listings/dsl/listings'
 require 'upwoof_listings/dsl/orders'
 require 'upwoof_listings/dsl/pets'
 require 'upwoof_listings/dsl/reservations'
+require 'upwoof_listings/dsl/reviews'
 require 'upwoof_listings/dsl/users'
 require 'upwoof_listings/dsl/accommodation_types'
 require 'upwoof_listings/dsl/animal_types'
@@ -31,6 +32,7 @@ module UpwoofListings
     include Orders
     include Pets
     include Reservations
+    include Reviews
     include Users
     include AccommodationTypes
     include AnimalTypes
