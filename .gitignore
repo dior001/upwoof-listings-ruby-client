@@ -16,3 +16,6 @@
 *.gem
 mkmf.log
 /config/gem_secret.yml
+
+# macOS Finder metadata
+.DS_Store
