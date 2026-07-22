@@ -7,3 +7,4 @@ gem 'rubocop', group: 'development', require: false
 ruby "4.0.5"
 
 gem 'cgi'
+gem 'simplecov', require: false, group: 'development'

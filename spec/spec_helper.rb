@@ -1,3 +1,12 @@
+require 'simplecov'
+SimpleCov.start do
+  skip '/spec/'
+  enable_coverage :branch
+  cover 'lib/**/*.rb'
+  # Fail the run if line coverage regresses below 100%.
+  minimum_coverage line: 100
+end
+
 require 'webmock/rspec'
 require 'upwoof_listings'
 require 'vcr'
