@@ -56,6 +56,42 @@ describe UpwoofListings::Resources::Object do
     it 'aliases has_many to attribute' do
       expect(klass.method(:has_many)).to eq(klass.method(:attribute))
     end
+
+    # The accessor module has to be included into the class that owns it. Each class builds its
+    # own, and a subclass never runs the `included` hook, so an accessor defined into a subclass's
+    # module used to land outside that subclass's ancestors: the value still read correctly, via
+    # method_missing, but the memoisation bought nothing and every resource in this gem paid
+    # method_missing on every attribute read.
+    it 'includes its accessor module, so a subclass memoises what it defines' do
+      subclass = Class.new(described_class)
+      # Read the module first: building it is what includes it.
+      accessors = subclass.attributes_module
+      expect(subclass.ancestors).to include(accessors)
+    end
+
+    it 'defines a real method on first read rather than falling through every time' do
+      subclass = Class.new(described_class)
+      instance = subclass.new('breed' => 'Corgi')
+
+      expect(instance.breed).to eq('Corgi')
+      expect(subclass.instance_methods).to include(:breed)
+    end
+
+    it 'goes through method_missing only once across repeated reads' do
+      calls = 0
+      counter = Module.new do
+        define_method(:method_missing) do |*args, &block|
+          calls += 1
+          super(*args, &block)
+        end
+      end
+
+      subclass = Class.new(described_class) { prepend counter }
+      instance = subclass.new('breed' => 'Corgi')
+      3.times { expect(instance.breed).to eq('Corgi') }
+
+      expect(calls).to eq(1)
+    end
   end
 
   describe 'serialization' do

@@ -10,8 +10,14 @@ module UpwoofListings::Resources::Object::Attributes
     end
 
     # @return [Module] module holding all attribute accessors
+    #
+    # Included into the class as it is created. Each class gets its own module, and a subclass
+    # never runs the `included` hook below, so without the include here the accessors defined
+    # into a subclass's module would sit outside its ancestors — leaving every read on every
+    # resource in this gem (all of which are subclasses of Object) to go through method_missing
+    # on every call rather than the once it is written to cost.
     def attributes_module
-      @attributes_module ||= const_set(:AttributeMethods, Module.new)
+      @attributes_module ||= const_set(:AttributeMethods, Module.new).tap { |mod| include(mod) }
     end
 
     def define_attribute_accessor(name, type = nil)
