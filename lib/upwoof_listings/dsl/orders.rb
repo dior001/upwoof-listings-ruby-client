@@ -23,7 +23,8 @@ module UpwoofListings
 
     # POST /orders
     # Create an order.
-    # @param [Hash] params Order attributes.
+    # @param [Hash] params Order attributes. An optional +:listing_id+ key picks which of the
+    #   caller's listings the order is for; it defaults to the caller's first listing.
     # @return [UpwoofListings::Resources::Order, nil].
     def create_order(params:)
       Resources::Order.parse(request(:post, 'orders/', params))

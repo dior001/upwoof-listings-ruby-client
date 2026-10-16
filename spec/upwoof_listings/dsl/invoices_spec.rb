@@ -79,4 +79,22 @@ describe UpwoofListings::DSL::Invoices do
       expect(invoice['status']).to eq('paid')
     end
   end
+
+  # DELETE /invoices/{id}
+  describe '#delete_invoice' do
+    let(:url) { "#{UpwoofListings.url.chomp('/')}/invoices/1?access_token=#{UpwoofListings.api_key}" }
+
+    it 'deletes a draft invoice' do
+      stub_request(:delete, url).to_return(status: 204)
+
+      expect(UpwoofListings.client.delete_invoice(id: 1)).to be true
+    end
+
+    it 'raises a ClientError when the invoice is not a draft' do
+      body = { errors: ['The invoice is not a draft'] }.to_json
+      stub_request(:delete, url).to_return(status: 403, body: body, headers: { 'Content-Type' => 'application/json' })
+
+      expect { UpwoofListings.client.delete_invoice(id: 1) }.to raise_error(UpwoofListings::Errors::ClientError)
+    end
+  end
 end
