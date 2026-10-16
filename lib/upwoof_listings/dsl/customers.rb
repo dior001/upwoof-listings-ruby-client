@@ -23,7 +23,8 @@ module UpwoofListings
 
     # POST /customers
     # Create a customer.
-    # @param [Hash] params Customer attributes.
+    # @param [Hash] params Customer attributes. An optional +:listing_id+ key picks which of the
+    #   caller's listings creates the customer; it defaults to the caller's first listing.
     # @return [UpwoofListings::Resources::Customer, nil].
     def create_customer(params:)
       Resources::Customer.parse(request(:post, 'customers/', params))

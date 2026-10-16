@@ -60,5 +60,16 @@ module UpwoofListings
 
       Resources::Invoice.parse(request(:post, "invoices/#{id}/pay_out_of_band"))
     end
+
+    # DELETE /invoices/{id}
+    # Delete an invoice. Only a draft invoice can be deleted; the API raises a
+    # {UpwoofListings::Errors::ClientError} (HTTP 403) for any other workflow state.
+    # @param [String] id An invoice's ID.
+    # @return [Boolean].
+    def delete_invoice(id:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      request(:delete, "invoices/#{id}").status == 204
+    end
   end
 end

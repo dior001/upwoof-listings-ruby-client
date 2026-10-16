@@ -64,12 +64,9 @@ describe UpwoofListings::DSL::Reservations do
     end
   end
 
-  describe '#delete_reservation' do
-    it 'deletes a reservation' do
-      stub_request(:delete, "#{base_url}/reservations/2?access_token=#{api_key}")
-        .to_return(status: 204)
-
-      expect(client.delete_reservation(id: 2)).to be true
-    end
+  # DELETE /reservations/{id} was removed from the API (there is no way to delete a reservation):
+  # confirm the client doesn't offer a method that would only ever 404.
+  it 'has no #delete_reservation method' do
+    expect(client).not_to respond_to(:delete_reservation)
   end
 end

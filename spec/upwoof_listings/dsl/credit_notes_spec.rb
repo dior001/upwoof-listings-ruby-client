@@ -79,4 +79,22 @@ describe UpwoofListings::DSL::CreditNotes do
       expect(credit_note['status']).to eq('void')
     end
   end
+
+  # DELETE /credit_notes/{id}
+  describe '#delete_credit_note' do
+    let(:url) { "#{UpwoofListings.url.chomp('/')}/credit_notes/1?access_token=#{UpwoofListings.api_key}" }
+
+    it 'deletes a never-issued credit note' do
+      stub_request(:delete, url).to_return(status: 204)
+
+      expect(UpwoofListings.client.delete_credit_note(id: 1)).to be true
+    end
+
+    it 'raises a ClientError when the credit note was already issued' do
+      body = { errors: ['The credit note was issued and cannot be deleted'] }.to_json
+      stub_request(:delete, url).to_return(status: 403, body: body, headers: { 'Content-Type' => 'application/json' })
+
+      expect { UpwoofListings.client.delete_credit_note(id: 1) }.to raise_error(UpwoofListings::Errors::ClientError)
+    end
+  end
 end

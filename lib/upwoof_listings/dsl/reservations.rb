@@ -50,15 +50,5 @@ module UpwoofListings
 
       Resources::Reservation.parse(request(:patch, "reservations/#{id}", params))
     end
-
-    # DELETE /reservations/{id}
-    # Delete a reservation.
-    # @param [String] id A reservation's ID.
-    # @return [Boolean].
-    def delete_reservation(id:)
-      raise ArgumentError, 'ID cannot be blank' if id.blank?
-
-      request(:delete, "reservations/#{id}").status == 204
-    end
   end
 end

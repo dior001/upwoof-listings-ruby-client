@@ -60,5 +60,17 @@ module UpwoofListings
 
       Resources::CreditNote.parse(request(:post, "credit_notes/#{id}/void"))
     end
+
+    # DELETE /credit_notes/{id}
+    # Delete a credit note. Only a credit note that was never issued can be deleted; the API
+    # raises a {UpwoofListings::Errors::ClientError} (HTTP 403) for an issued one -- void it
+    # instead.
+    # @param [String] id A credit note's ID.
+    # @return [Boolean].
+    def delete_credit_note(id:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      request(:delete, "credit_notes/#{id}").status == 204
+    end
   end
 end
