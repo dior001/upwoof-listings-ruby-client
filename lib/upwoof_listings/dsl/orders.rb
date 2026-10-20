@@ -52,6 +52,37 @@ module UpwoofListings
       Resources::Order.parse(request(:patch, "orders/#{id}", params))
     end
 
+    # POST /orders/{id}/apply_promo_code
+    # Apply a promo code to an order as a discount line item, up to the order's remaining
+    # balance. Raises a {UpwoofListings::Errors::ClientError} (HTTP 404) for an unknown code,
+    # or a validation error (HTTP 422) if the code can't be applied to this order.
+    # @param [String] id An order's ID.
+    # @param [String] code The promo code.
+    # @raise [ArgumentError] If the method arguments are blank.
+    # @return [UpwoofListings::Resources::Order, nil].
+    def apply_promo_code(id:, code:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+      raise ArgumentError, 'Code cannot be blank' if code.blank?
+
+      Resources::Order.parse(request(:post, "orders/#{id}/apply_promo_code", { code: }))
+    end
+
+    # POST /orders/{id}/redeem_gift_card
+    # Redeem a gift card against an order as a discount line item, up to whichever is smaller:
+    # the order's remaining balance or the gift card's remaining balance. Raises a
+    # {UpwoofListings::Errors::ClientError} (HTTP 404) for an unknown code, or a validation
+    # error (HTTP 422) if the card can't be redeemed against this order.
+    # @param [String] id An order's ID.
+    # @param [String] code The gift card code.
+    # @raise [ArgumentError] If the method arguments are blank.
+    # @return [UpwoofListings::Resources::Order, nil].
+    def redeem_gift_card(id:, code:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+      raise ArgumentError, 'Code cannot be blank' if code.blank?
+
+      Resources::Order.parse(request(:post, "orders/#{id}/redeem_gift_card", { code: }))
+    end
+
     # DELETE /orders/{id}
     # Delete an order.
     # @param [String] id An order's ID.
