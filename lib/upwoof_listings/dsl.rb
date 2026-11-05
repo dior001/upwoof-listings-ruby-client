@@ -21,6 +21,7 @@ require 'upwoof_listings/dsl/breeds'
 require 'upwoof_listings/dsl/uw_listing_cms_apps'
 require 'upwoof_listings/dsl/vaccination_records'
 require 'upwoof_listings/dsl/waiver_signatures'
+require 'upwoof_listings/dsl/report_cards'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -42,6 +43,7 @@ module UpwoofListings
     include UwListingCmsApps
     include VaccinationRecords
     include WaiverSignatures
+    include ReportCards
     include Utils
   end
 end
