@@ -41,4 +41,24 @@ describe UpwoofListings::DSL::Reviews do
       end.to raise_error(ArgumentError, 'ID cannot be blank')
     end
   end
+
+  describe '#respond_to_review' do
+    it 'posts the operator response' do
+      params = { review_id: 2, response_body: 'Thank you!' }
+      stub_request(:post, "#{base_url}/listings/1/review_response?access_token=#{api_key}")
+        .with(body: params.to_json)
+        .to_return(status: 200, body: { id: 2, response_body: 'Thank you!' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      review = client.respond_to_review(listing_id: 1, params: params)
+      expect(review).to be_a(Review)
+      expect(review['response_body']).to eq('Thank you!')
+    end
+
+    it 'raises an ArgumentError when the listing id is blank' do
+      expect do
+        client.respond_to_review(listing_id: '', params: { review_id: 2, response_body: 'Thank you!' })
+      end.to raise_error(ArgumentError, 'ID cannot be blank')
+    end
+  end
 end
