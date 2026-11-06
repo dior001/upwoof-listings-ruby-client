@@ -25,5 +25,17 @@ module UpwoofListings
 
       Resources::Review.parse(request(:post, "reservations/#{reservation_id}/review", params))
     end
+
+    # POST /listings/{id}/review_response
+    # Post the listing operator's response to one of the listing's own reviews.
+    # @param [String] listing_id A listing's ID.
+    # @param [Hash] params Response attributes (review_id, response_body).
+    # @raise [ArgumentError] If the method arguments are blank.
+    # @return [UpwoofListings::Resources::Review, nil].
+    def respond_to_review(listing_id:, params:)
+      raise ArgumentError, 'ID cannot be blank' if listing_id.blank?
+
+      Resources::Review.parse(request(:post, "listings/#{listing_id}/review_response", params))
+    end
   end
 end
