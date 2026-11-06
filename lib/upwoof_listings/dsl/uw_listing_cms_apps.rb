@@ -60,5 +60,26 @@ module UpwoofListings
 
       request(:delete, "uw_listing_cms_apps/#{id}").status == 204
     end
+
+    # PUT /uw_listing_cms_apps/{id}/setup_complete
+    # Signal a CMS app's setup is complete.
+    # @param [String] id A CMS app's ID.
+    # @return [UpwoofListings::Resources::UwListingCmsApp, nil].
+    def setup_complete_uw_listing_cms_app(id:)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::UwListingCmsApp.parse(request(:put, "uw_listing_cms_apps/#{id}/setup_complete"))
+    end
+
+    # PUT /uw_listing_cms_apps/{id}/setup_completion_failure
+    # Signal a CMS app's setup has failed.
+    # @param [String] id A CMS app's ID.
+    # @param [Hash] params (optional) e.g. an `error` message.
+    # @return [UpwoofListings::Resources::UwListingCmsApp, nil].
+    def setup_completion_failure_uw_listing_cms_app(id:, params: nil)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+
+      Resources::UwListingCmsApp.parse(request(:put, "uw_listing_cms_apps/#{id}/setup_completion_failure", params))
+    end
   end
 end

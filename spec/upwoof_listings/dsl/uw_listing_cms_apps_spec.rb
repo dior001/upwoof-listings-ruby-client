@@ -80,4 +80,55 @@ describe UpwoofListings::DSL::UwListingCmsApps do
       expect(UpwoofListings.client.delete_uw_listing_cms_app(id: id)).to be true
     end
   end
+
+  # PUT /uw_listing_cms_apps/{id}/setup_complete
+  describe '#setup_complete_uw_listing_cms_app' do
+    it 'signals setup is complete' do
+      id = 1
+      base = UpwoofListings.url.chomp('/')
+      stub_request(:put, "#{base}/uw_listing_cms_apps/#{id}/setup_complete?access_token=#{UpwoofListings.api_key}")
+        .to_return(status: 200, body: { id: id, workflow_state: 'operational' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(UpwoofListings.client.setup_complete_uw_listing_cms_app(id: id)).to be_a(UwListingCmsApp)
+    end
+
+    it 'raises when id is blank' do
+      expect { UpwoofListings.client.setup_complete_uw_listing_cms_app(id: '') }
+        .to raise_error(ArgumentError, 'ID cannot be blank')
+    end
+  end
+
+  # PUT /uw_listing_cms_apps/{id}/setup_completion_failure
+  describe '#setup_completion_failure_uw_listing_cms_app' do
+    it 'signals setup has failed' do
+      id = 1
+      params = { error: 'Could not reach the CMS host' }
+      base = UpwoofListings.url.chomp('/')
+      path = "uw_listing_cms_apps/#{id}/setup_completion_failure"
+      stub_request(:put, "#{base}/#{path}?access_token=#{UpwoofListings.api_key}")
+        .with(body: params.to_json)
+        .to_return(status: 200, body: { id: id, workflow_state: 'setup_completion_failed' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      app = UpwoofListings.client.setup_completion_failure_uw_listing_cms_app(id: id, params: params)
+      expect(app).to be_a(UwListingCmsApp)
+    end
+
+    it 'works with no params' do
+      id = 1
+      base = UpwoofListings.url.chomp('/')
+      path = "uw_listing_cms_apps/#{id}/setup_completion_failure"
+      stub_request(:put, "#{base}/#{path}?access_token=#{UpwoofListings.api_key}")
+        .to_return(status: 200, body: { id: id, workflow_state: 'setup_completion_failed' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(UpwoofListings.client.setup_completion_failure_uw_listing_cms_app(id: id)).to be_a(UwListingCmsApp)
+    end
+
+    it 'raises when id is blank' do
+      expect { UpwoofListings.client.setup_completion_failure_uw_listing_cms_app(id: '') }
+        .to raise_error(ArgumentError, 'ID cannot be blank')
+    end
+  end
 end
