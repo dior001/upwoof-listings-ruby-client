@@ -39,32 +39,15 @@ describe UpwoofListings::DSL::CreditNotes do
     end
   end
 
-  # PUT /credit_notes/{id}
-  describe '#update_credit_note' do
-    it 'updates a credit note' do
-      id = 1
-      params = { reason: 'correction' }
-      stub_request(:put, "#{UpwoofListings.url.chomp('/')}/credit_notes/#{id}?access_token=#{UpwoofListings.api_key}")
-        .with(body: params.to_json)
-        .to_return(status: 200, body: { id: id, reason: 'correction' }.to_json, headers: { 'Content-Type' => 'application/json' })
-
-      credit_note = UpwoofListings.client.update_credit_note(id: id, params: params)
-      expect(credit_note).to be_a(CreditNote)
-    end
+  # PUT and PATCH /credit_notes/{id} were never real routes (a credit note is immutable after
+  # creation -- void or delete are its only state changes): confirm the client doesn't offer
+  # methods that would only ever 404.
+  it 'has no #update_credit_note method' do
+    expect(UpwoofListings.client).not_to respond_to(:update_credit_note)
   end
 
-  # PATCH /credit_notes/{id}
-  describe '#patch_credit_note' do
-    it 'partially updates a credit note' do
-      id = 1
-      params = { reason: 'correction patch' }
-      stub_request(:patch, "#{UpwoofListings.url.chomp('/')}/credit_notes/#{id}?access_token=#{UpwoofListings.api_key}")
-        .with(body: params.to_json)
-        .to_return(status: 200, body: { id: id, reason: 'correction patch' }.to_json, headers: { 'Content-Type' => 'application/json' })
-
-      credit_note = UpwoofListings.client.patch_credit_note(id: id, params: params)
-      expect(credit_note).to be_a(CreditNote)
-    end
+  it 'has no #patch_credit_note method' do
+    expect(UpwoofListings.client).not_to respond_to(:patch_credit_note)
   end
 
   # POST /credit_notes/{id}/void
