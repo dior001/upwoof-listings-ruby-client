@@ -80,4 +80,37 @@ describe UpwoofListings::DSL::Listings do
       expect(UpwoofListings.client.delete_listing(id: id)).to be true
     end
   end
+
+  # GET /listings/{id}/capacity
+  describe '#get_listing_capacity' do
+    let(:base_url) { UpwoofListings.url.chomp('/') }
+    let(:api_key) { UpwoofListings.api_key }
+
+    it 'returns the capacity for a listing' do
+      id = 1
+      stub_request(:get, "#{base_url}/listings/#{id}/capacity?access_token=#{api_key}")
+        .to_return(status: 200,
+                   body: { current_dogs: 2, max_dogs: 5, current_cats: 1, max_cats: 3,
+                           available_dogs: 3, available_cats: 2 }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      capacity = UpwoofListings.client.get_listing_capacity(listing_id: id)
+      expect(capacity['current_dogs']).to eq(2)
+      expect(capacity['available_cats']).to eq(2)
+    end
+
+    it 'passes a date query parameter when given' do
+      id = 1
+      stub_request(:get, "#{base_url}/listings/#{id}/capacity?access_token=#{api_key}&date=2026-01-01")
+        .to_return(status: 200, body: { current_dogs: 0 }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+      UpwoofListings.client.get_listing_capacity(listing_id: id, date: '2026-01-01')
+    end
+
+    it 'raises an ArgumentError when the listing id is blank' do
+      expect do
+        UpwoofListings.client.get_listing_capacity(listing_id: '')
+      end.to raise_error(ArgumentError, 'ID cannot be blank')
+    end
+  end
 end

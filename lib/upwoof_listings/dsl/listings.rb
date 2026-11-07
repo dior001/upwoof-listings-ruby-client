@@ -60,5 +60,18 @@ module UpwoofListings
 
       request(:delete, "listings/#{id}").status == 204
     end
+
+    # GET /listings/{id}/capacity
+    # Get current pet counts vs. configured capacity limits for a listing.
+    # @param [String] listing_id A listing's ID.
+    # @param [String, Date] date (optional) Date to check capacity for (defaults to today).
+    # @raise [ArgumentError] If the method arguments are blank.
+    # @return [UpwoofListings::Resources::Object, nil].
+    def get_listing_capacity(listing_id:, date: nil)
+      raise ArgumentError, 'ID cannot be blank' if listing_id.blank?
+
+      params = date.present? ? { date: date } : nil
+      Resources::Object.parse(request(:get, "listings/#{listing_id}/capacity", params, nil))
+    end
   end
 end
