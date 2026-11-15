@@ -18,6 +18,7 @@ module UpwoofListings
   autoload :Resources, 'upwoof_listings/resources'
   autoload :Errors, 'upwoof_listings/errors'
   autoload :Utils, 'upwoof_listings/utils'
+  autoload :Webhooks, 'upwoof_listings/webhooks'
 
   class << self
     # @return [String]

@@ -69,9 +69,12 @@ module UpwoofListings
 
     # POST /orders/{id}/redeem_gift_card
     # Redeem a gift card against an order as a discount line item, up to whichever is smaller:
-    # the order's remaining balance or the gift card's remaining balance. Raises a
-    # {UpwoofListings::Errors::ClientError} (HTTP 404) for an unknown code, or a validation
-    # error (HTTP 422) if the card can't be redeemed against this order.
+    # the order's remaining balance or the gift card's remaining balance.
+    # Raises {UpwoofListings::Errors::ResourceNotFoundError} (HTTP 404) for an unknown order, and
+    # for any code that isn't a usable gift card here: unknown, expired, used up or another
+    # listing's all get the same 404, so the answer never reveals which codes exist. Raises
+    # {UpwoofListings::Errors::ValidationError} (HTTP 422, the API's messages in #errors) only for an
+    # order-specific refusal, such as an order past the "new" state or a card already applied to it.
     # @param [String] id An order's ID.
     # @param [String] code The gift card code.
     # @raise [ArgumentError] If the method arguments are blank.

@@ -64,6 +64,29 @@ describe UpwoofListings::DSL::Reservations do
     end
   end
 
+  describe 'a refused date change' do
+    let(:refusal) do
+      { status: 422, body: { errors: ['Accommodation is not available for those dates'] }.to_json,
+        headers: { 'Content-Type' => 'application/json' } }
+    end
+
+    it 'raises a ValidationError carrying the API errors from #update_reservation' do
+      stub_request(:put, "#{base_url}/reservations/2?access_token=#{api_key}").to_return(refusal)
+
+      expect { client.update_reservation(id: 2, params: { when_reservation_finish: '2026-12-20' }) }
+        .to raise_error(UpwoofListings::Errors::ValidationError) { |error|
+          expect(error.errors).to eq(['Accommodation is not available for those dates'])
+        }
+    end
+
+    it 'raises a ValidationError from #patch_reservation' do
+      stub_request(:patch, "#{base_url}/reservations/2?access_token=#{api_key}").to_return(refusal)
+
+      expect { client.patch_reservation(id: 2, params: { when_reservation_finish: '2026-12-20' }) }
+        .to raise_error(UpwoofListings::Errors::ValidationError)
+    end
+  end
+
   # DELETE /reservations/{id} was removed from the API (there is no way to delete a reservation):
   # confirm the client doesn't offer a method that would only ever 404.
   it 'has no #delete_reservation method' do

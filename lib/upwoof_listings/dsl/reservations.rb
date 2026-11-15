@@ -31,6 +31,10 @@ module UpwoofListings
 
     # PUT /reservations/{id}
     # Update a reservation.
+    # Changing when_reservation_start/when_reservation_finish runs the same availability check as the
+    # listing manager, rebuilds the order and fires reservation.duration_changed (and its webhook).
+    # @raise [UpwoofListings::Errors::ValidationError] (HTTP 422) If the API refuses the change; its
+    #   reasons are in #errors.
     # @param [String] id A reservation's ID.
     # @param [Hash] params Reservation attributes.
     # @return [UpwoofListings::Resources::Reservation, nil].
@@ -42,6 +46,10 @@ module UpwoofListings
 
     # PATCH /reservations/{id}
     # Partially update a reservation.
+    # Changing when_reservation_start/when_reservation_finish runs the same availability check as the
+    # listing manager, rebuilds the order and fires reservation.duration_changed (and its webhook).
+    # @raise [UpwoofListings::Errors::ValidationError] (HTTP 422) If the API refuses the change; its
+    #   reasons are in #errors.
     # @param [String] id A reservation's ID.
     # @param [Hash] params Reservation attributes.
     # @return [UpwoofListings::Resources::Reservation, nil].

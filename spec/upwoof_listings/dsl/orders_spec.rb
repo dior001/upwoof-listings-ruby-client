@@ -95,6 +95,24 @@ describe UpwoofListings::DSL::Orders do
       expect(order['price_cents']).to eq(500)
     end
 
+    it 'raises ResourceNotFoundError for any unusable code (unknown, expired, used up, another listing\'s)' do
+      stub_request(:post, "#{base_url}/orders/2/redeem_gift_card?access_token=#{api_key}")
+        .to_return(status: 404, body: { errors: ['Gift card not found'] }.to_json)
+
+      expect { client.redeem_gift_card(id: 2, code: 'EXPIRED1') }
+        .to raise_error(UpwoofListings::Errors::ResourceNotFoundError) { |error|
+          expect(error.errors).to eq(['Gift card not found'])
+        }
+    end
+
+    it 'raises ValidationError for an order-specific refusal' do
+      stub_request(:post, "#{base_url}/orders/2/redeem_gift_card?access_token=#{api_key}")
+        .to_return(status: 422, body: { errors: ['Already applied to this order'] }.to_json)
+
+      expect { client.redeem_gift_card(id: 2, code: 'GIFT123') }
+        .to raise_error(UpwoofListings::Errors::ValidationError)
+    end
+
     it 'raises for a blank id' do
       expect { client.redeem_gift_card(id: nil, code: 'GIFT123') }.to raise_error(ArgumentError)
     end
