@@ -22,6 +22,14 @@ require 'upwoof_listings/dsl/uw_listing_cms_apps'
 require 'upwoof_listings/dsl/vaccination_records'
 require 'upwoof_listings/dsl/waiver_signatures'
 require 'upwoof_listings/dsl/report_cards'
+require 'upwoof_listings/dsl/pet_evaluations'
+require 'upwoof_listings/dsl/store_credits'
+require 'upwoof_listings/dsl/pricing_rules'
+require 'upwoof_listings/dsl/membership_plans'
+require 'upwoof_listings/dsl/custom_fields'
+require 'upwoof_listings/dsl/special_opening_hours'
+require 'upwoof_listings/dsl/notification_templates'
+require 'upwoof_listings/dsl/training_courses'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -44,6 +52,14 @@ module UpwoofListings
     include VaccinationRecords
     include WaiverSignatures
     include ReportCards
+    include PetEvaluations
+    include StoreCredits
+    include PricingRules
+    include MembershipPlans
+    include CustomFields
+    include SpecialOpeningHours
+    include NotificationTemplates
+    include TrainingCourses
     include Utils
   end
 end

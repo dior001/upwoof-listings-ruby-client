@@ -42,10 +42,35 @@ describe UpwoofListings::Errors do
       expect(UpwoofListings::Errors::ClientError.new(response: json).errors).to eq(['Dates unavailable'])
     end
 
-    it 'is empty for a body that is not JSON or has no errors' do
+    it 'is empty for a body that is not JSON or has no errors or message' do
       expect(UpwoofListings::Errors::ClientError.new(response: response).errors).to eq([])
-      no_errors = double('response', status: 400, body: { message: 'Bad' }.to_json)
+      no_errors = double('response', status: 400, body: { error: 'bad request' }.to_json)
       expect(UpwoofListings::Errors::ClientError.new(response: no_errors).errors).to eq([])
+      list = double('response', status: 400, body: ['Bad'].to_json)
+      expect(UpwoofListings::Errors::ClientError.new(response: list).errors).to eq([])
+    end
+
+    it "falls back to the body's single message" do
+      json = double('response', status: 422,
+                                body: { error: 'unprocessable entity', message: 'Insufficient store credit' }.to_json)
+      expect(UpwoofListings::Errors::ClientError.new(response: json).errors).to eq(['Insufficient store credit'])
+    end
+
+    it 'lists the messages of an errors hash' do
+      json = double('response', status: 422, body: { errors: { '7' => 'is not a number' } }.to_json)
+      expect(UpwoofListings::Errors::ClientError.new(response: json).errors).to eq(['is not a number'])
+    end
+  end
+
+  describe 'body' do
+    it 'is the parsed JSON body' do
+      json = double('response', status: 422, body: { unknown_custom_field_ids: ['9'], errors: {} }.to_json)
+      expect(UpwoofListings::Errors::ClientError.new(response: json).body)
+        .to eq('unknown_custom_field_ids' => ['9'], 'errors' => {})
+    end
+
+    it 'is nil for a body that is not JSON' do
+      expect(UpwoofListings::Errors::ClientError.new(response: response).body).to be_nil
     end
   end
 

@@ -31,6 +31,10 @@ module UpwoofListings
 
     # PUT /listings/{id}
     # Update a listing.
+    # params may also set google_review_url, yelp_review_url and facebook_review_url: https only, on that
+    # site's own hosts, at most 500 characters, a blank string removes it (an invalid one raises
+    # {UpwoofListings::Errors::ValidationError}, HTTP 422). Sending any of the three needs an owner/manager of
+    # the listing (else ClientError, HTTP 403).
     # @param [String] id A listing's ID.
     # @param [Hash] params Listing attributes.
     # @return [UpwoofListings::Resources::Listing, nil].
@@ -42,6 +46,10 @@ module UpwoofListings
 
     # PATCH /listings/{id}
     # Partially update a listing.
+    # params may also set google_review_url, yelp_review_url and facebook_review_url: https only, on that
+    # site's own hosts, at most 500 characters, a blank string removes it (an invalid one raises
+    # {UpwoofListings::Errors::ValidationError}, HTTP 422). Sending any of the three needs an owner/manager of
+    # the listing (else ClientError, HTTP 403).
     # @param [String] id A listing's ID.
     # @param [Hash] params Listing attributes.
     # @return [UpwoofListings::Resources::Listing, nil].

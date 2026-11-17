@@ -47,10 +47,12 @@ module UpwoofListings
       end
 
       params = { access_token: @api_key }
-      params.merge!(clamp_per_page(query)) if method == :get && query.is_a?(Hash)
+      # GET and DELETE carry their query in the query string; the others send it as the body.
+      in_query_string = %i[get delete].include?(method)
+      params.merge!(clamp_per_page(query)) if in_query_string && query.is_a?(Hash)
       token_url = UrlHelper.build_url(path: "#{@url}#{path}", params: params)
       payload = nil
-      if query.present? && method != :get
+      if query.present? && !in_query_string
         accept = headers.present? ? headers['Accept'] : nil
         payload = if accept.present? && accept == 'application/json'
                     JSON.generate(query)

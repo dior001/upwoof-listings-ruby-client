@@ -22,7 +22,9 @@ module UpwoofListings
     end
 
     # POST /reservations
-    # Create a reservation.
+    # Create a reservation. An inactive (deactivated) pet_id raises
+    # {UpwoofListings::Errors::ValidationError} (HTTP 422, "Inactive pets can't be booked: <name>") and nothing
+    # is created.
     # @param [Hash] params Reservation attributes.
     # @return [UpwoofListings::Resources::Reservation, nil].
     def create_reservation(params:)
@@ -34,7 +36,8 @@ module UpwoofListings
     # Changing when_reservation_start/when_reservation_finish runs the same availability check as the
     # listing manager, rebuilds the order and fires reservation.duration_changed (and its webhook).
     # @raise [UpwoofListings::Errors::ValidationError] (HTTP 422) If the API refuses the change; its
-    #   reasons are in #errors.
+    #   reasons are in #errors. So does a reservation whose every pet is inactive (deactivated); its dates are
+    #   left unchanged.
     # @param [String] id A reservation's ID.
     # @param [Hash] params Reservation attributes.
     # @return [UpwoofListings::Resources::Reservation, nil].
@@ -49,7 +52,8 @@ module UpwoofListings
     # Changing when_reservation_start/when_reservation_finish runs the same availability check as the
     # listing manager, rebuilds the order and fires reservation.duration_changed (and its webhook).
     # @raise [UpwoofListings::Errors::ValidationError] (HTTP 422) If the API refuses the change; its
-    #   reasons are in #errors.
+    #   reasons are in #errors. So does a reservation whose every pet is inactive (deactivated); its dates are
+    #   left unchanged.
     # @param [String] id A reservation's ID.
     # @param [Hash] params Reservation attributes.
     # @return [UpwoofListings::Resources::Reservation, nil].
