@@ -31,6 +31,11 @@ narrow it:
   `update_reservation`/`patch_reservation` runs the availability check, rebuilds the order and fires
   `reservation.duration_changed`; a date change it refuses raises this, with the reasons in `errors`.
 
+A staff member's token whose permission group doesn't allow the matching page at the listing gets `ClientError`
+(HTTP 403, "Your permission group doesn't allow this at this listing"). A collection read without `listing_id`
+(reservations, customers, pets, invoices, orders, accommodations, credit notes, pet evaluations, training courses,
+store credit) answers 403 when the group denies it at any of the caller's listings; pass a `listing_id` it allows.
+
 A refused custom field answer (`update_customer_custom_fields`/`update_pet_custom_fields`/
 `update_reservation_custom_fields`) raises `ValidationError` with `body['unknown_custom_field_ids']` and
 `body['errors']` (messages keyed by field definition id); nothing is saved.
@@ -73,7 +78,23 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   `get_training_enrollment`, `cancel_training_enrollment`.
 * Review page links: `update_listing`/`patch_listing` accept `google_review_url`, `yelp_review_url` and
   `facebook_review_url` (owner/manager), which listings return.
-* `get_order` also returns the order a standalone grooming appointment or private lesson is billed on.
+* `get_order` also returns the order a standalone grooming appointment or private lesson is billed on, and any
+  order `get_orders` lists that has nothing behind it (such as one made with `create_order`).
+* Card readers: `get_listing_card_readers`, `create_listing_card_reader`, `delete_listing_card_reader` (registering
+  or removing one needs owner/manager with two-factor authentication on). In-person payments on a reader:
+  `create_invoice_terminal_payment`, `get_invoice_terminal_payment`, `cancel_invoice_terminal_payment`, and the
+  same three for a shop sale (`create_retail_sale_terminal_payment`, ...). Poll the `get_` method until `status`
+  leaves `processing` (`succeeded`, `failed` or `canceled`).
+* Online grooming booking: `get_listing_grooming_services`, `get_listing_groomers`,
+  `get_listing_grooming_open_times`, `create_listing_grooming_appointments` (one groom per pet per service;
+  grooms that would take a deposit can't be booked through the API).
+* Playgroups: `get_listing_play_yards`, `get_listing_play_yard`, `create_listing_play_yard`,
+  `patch_listing_play_yard`, `delete_listing_play_yard`, `get_listing_playgroup_assignments`,
+  `create_listing_playgroup_assignment`, `patch_listing_playgroup_assignment` (moves a dog to another yard),
+  `delete_listing_playgroup_assignment`. Placements carry the board's `warnings`.
+* Report cards for a whole day: `get_listing_report_cards`, `start_listing_report_cards`,
+  `publish_listing_report_cards`; a card's photos: `get_report_card_photos`, `share_report_card_photo`,
+  `unshare_report_card_photo` (the listing's website photo stream). Report cards carry `reservation_id`.
 
 ## Verifying webhooks
 

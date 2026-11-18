@@ -30,6 +30,9 @@ require 'upwoof_listings/dsl/custom_fields'
 require 'upwoof_listings/dsl/special_opening_hours'
 require 'upwoof_listings/dsl/notification_templates'
 require 'upwoof_listings/dsl/training_courses'
+require 'upwoof_listings/dsl/card_readers'
+require 'upwoof_listings/dsl/grooming'
+require 'upwoof_listings/dsl/play_yards'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -60,6 +63,9 @@ module UpwoofListings
     include SpecialOpeningHours
     include NotificationTemplates
     include TrainingCourses
+    include CardReaders
+    include Grooming
+    include PlayYards
     include Utils
   end
 end
