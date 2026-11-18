@@ -11,7 +11,8 @@ module UpwoofListings
     end
 
     # GET /Order/{id}
-    # Get an order. This includes the order a standalone grooming appointment or private lesson (no
+    # Get any order get_orders lists, including one with no reservation, groom or lesson behind it (such as one
+    # made with create_order). This includes the order a standalone grooming appointment or private lesson (no
     # reservation) is billed on, at one of the caller's listings; such an order can't be changed or deleted
     # through the API (ClientError, HTTP 403).
     # @param [String] id A order's ID.
