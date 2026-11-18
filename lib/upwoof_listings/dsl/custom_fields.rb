@@ -16,7 +16,8 @@ module UpwoofListings
     # GET /listings/{listing_id}/custom_field_definitions
     # A listing's own custom fields plus its listing group's group-wide ones.
     # @param [String] listing_id A listing's ID.
-    # @param [Hash] params (optional) record_type (customer, pet, reservation, incident_report), page, per_page.
+    # @param [Hash] params (optional) record_type (customer, pet, reservation, incident_report,
+    #   stay_feedback), page, per_page.
     # @raise [ArgumentError] If the method arguments are blank.
     # @return [Array<UpwoofListings::Resources::CustomFieldDefinition>, nil].
     def get_listing_custom_field_definitions(listing_id:, params: nil)

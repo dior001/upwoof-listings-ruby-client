@@ -37,6 +37,17 @@ describe UpwoofListings::DSL::StoreCredits do
       expect(transactions.first).to be_a(StoreCreditTransaction)
     end
 
+    %w[loyalty_conversion deposit_overpayment group_departure].each do |entry_type|
+      it "returns a #{entry_type} entry" do
+        stub_request(:get, "#{base_url}/customers/2/store_credit/transactions")
+          .with(query: { access_token: api_key, listing_id: '1' })
+          .to_return(status: 200, body: [{ id: 10, entry_type: entry_type }].to_json, headers: json)
+
+        transactions = client.get_customer_store_credit_transactions(customer_id: 2, listing_id: 1)
+        expect(transactions.first['entry_type']).to eq(entry_type)
+      end
+    end
+
     it 'works without params' do
       stub_request(:get, "#{base_url}/customers/2/store_credit/transactions")
         .with(query: { access_token: api_key, listing_id: '1' })

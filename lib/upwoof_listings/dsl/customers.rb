@@ -3,8 +3,9 @@ require 'upwoof_listings/dsl'
 module UpwoofListings
   module DSL::Customers
     # GET /Customers
-    # Get customers.
-    # @param [Hash] params (optional) A hash of query parameters.
+    # Get customers. Each customer carries customer_tags.
+    # @param [Hash] params (optional) A hash of query parameters. customer_tag_id keeps only customers carrying
+    #   that tag (one of the queried listings' own; any other id gives an empty page).
     # @return [Array, nil].
     def get_customers(params: nil)
       Resources::Customer.parse(request(:get, 'customers/', params, nil))

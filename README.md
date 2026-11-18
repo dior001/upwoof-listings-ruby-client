@@ -85,9 +85,29 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   `create_invoice_terminal_payment`, `get_invoice_terminal_payment`, `cancel_invoice_terminal_payment`, and the
   same three for a shop sale (`create_retail_sale_terminal_payment`, ...). Poll the `get_` method until `status`
   leaves `processing` (`succeeded`, `failed` or `canceled`).
-* Online grooming booking: `get_listing_grooming_services`, `get_listing_groomers`,
-  `get_listing_grooming_open_times`, `create_listing_grooming_appointments` (one groom per pet per service;
-  grooms that would take a deposit can't be booked through the API).
+* Online appointment booking, for grooms, private lessons, facility tours and pet transport trips:
+  `get_listing_grooming_services`, `get_listing_groomers`, `get_listing_grooming_open_times`,
+  `create_listing_grooming_appointments`, `get_listing_grooming_appointments`, and the same five for lessons
+  (`get_listing_lesson_services`, `get_listing_trainers`, `get_listing_lesson_open_times`,
+  `create_listing_lesson_appointments`, `get_listing_lesson_appointments`), tours (`..._tour_...`,
+  `get_listing_tour_hosts`; a tour takes no `pet_ids`) and transport (`..._transport_...`,
+  `get_listing_transport_drivers`; a trip takes a pickup and optional drop-off address). A booking that takes a
+  deposit comes back `pending_payment` with a `checkout_url` to send the customer to (also for a customer with no
+  UpWoof account); pass `success_url`/`cancel_url` (https) for where they return to.
+* Authorized pickups (any team member, `listing_id` required): `get_customer_authorized_pickups`,
+  `get_customer_authorized_pickup`, `create_customer_authorized_pickup`, `patch_customer_authorized_pickup`,
+  `delete_customer_authorized_pickup`.
+* Customer tags (owner/manager): `get_listing_customer_tags`, `create_listing_customer_tag`,
+  `patch_listing_customer_tag`, `delete_listing_customer_tag`, `tag_listing_customer`, `untag_listing_customer`.
+  Customers carry `customer_tags`, `get_customers` takes `customer_tag_id`, and pricing rules take
+  `customer_tag_ids`.
+* Pricing rules also take stay conditions `minimum_nights`, `minimum_pets`, `minimum_weight_lbs`, and
+  `stacking_mode` `exclusive_stay_adjustment`.
+* Shop products on a stay: `get_listing_stay_products`, `get_reservation_retail_items`,
+  `create_reservation_retail_item`, `delete_reservation_retail_item`.
+* A customer's `billing_address`, `email`, `phone_number` and `physical_address`, and an order's
+  `order_line_items`, `price_cents` and `uw_fee_amount_cents`, are nil for a staff member whose permission
+  group hides customers' contact details or a stay's charges.
 * Playgroups: `get_listing_play_yards`, `get_listing_play_yard`, `create_listing_play_yard`,
   `patch_listing_play_yard`, `delete_listing_play_yard`, `get_listing_playgroup_assignments`,
   `create_listing_playgroup_assignment`, `patch_listing_playgroup_assignment` (moves a dog to another yard),
