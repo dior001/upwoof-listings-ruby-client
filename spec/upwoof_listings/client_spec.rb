@@ -30,6 +30,36 @@ describe UpwoofListings::Client do
       expect(stub).to have_been_requested
     end
 
+    it 'never asks for more than MAX_PER_PAGE (100) records a page' do
+      expect(described_class::MAX_PER_PAGE).to eq(100)
+      stub = stub_request(:get, "#{base_url}users?access_token=#{api_key}&page=2&per_page=100")
+             .to_return(status: 200, body: '[]', headers: { 'Content-Type' => 'application/json' })
+
+      client.request(:get, 'users', { page: 2, per_page: 1000 })
+      client.request(:get, 'users', { 'page' => 2, 'per_page' => '500' })
+      expect(stub).to have_been_requested.twice
+    end
+
+    it 'sends a per_page within the cap, or one it cannot read, as given' do
+      within = stub_request(:get, "#{base_url}users?access_token=#{api_key}&per_page=50")
+               .to_return(status: 200, body: '[]', headers: { 'Content-Type' => 'application/json' })
+      unreadable = stub_request(:get, "#{base_url}users?access_token=#{api_key}&per_page=lots")
+                   .to_return(status: 200, body: '[]', headers: { 'Content-Type' => 'application/json' })
+
+      client.request(:get, 'users', { per_page: 50 })
+      client.request(:get, 'users', { per_page: 'lots' })
+      expect(within).to have_been_requested
+      expect(unreadable).to have_been_requested
+    end
+
+    it 'raises ValidationError on a 422' do
+      stub_request(:post, "#{base_url}pets?access_token=#{api_key}")
+        .to_return(status: 422, body: { errors: ['Name is required'] }.to_json)
+
+      expect { client.request(:post, 'pets', { name: '' }) }
+        .to raise_error(UpwoofListings::Errors::ValidationError) { |error| expect(error.errors).to eq(['Name is required']) }
+    end
+
     it 'sends a JSON body when the Accept header is application/json' do
       payload = { name: 'Rex' }
       stub = stub_request(:post, "#{base_url}pets?access_token=#{api_key}")

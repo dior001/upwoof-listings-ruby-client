@@ -29,6 +29,7 @@ describe 'loading the library' do
     upwoof_listings/errors
     upwoof_listings/resources
     upwoof_listings/utils
+    upwoof_listings/webhooks
   ].each do |entry_point|
     it "requires #{entry_point} on its own" do
       output, ok = in_clean_process("require '#{entry_point}'; print 'loaded'")
