@@ -20,6 +20,15 @@ describe UpwoofListings::DSL::CustomFields do
       expect(definitions.first).to be_a(CustomFieldDefinition)
     end
 
+    it 'lists the stay feedback definitions' do
+      stub_request(:get, "#{base_url}/listings/1/custom_field_definitions")
+        .with(query: { access_token: api_key, record_type: 'stay_feedback' })
+        .to_return(status: 200, body: [{ id: 8, record_type: 'stay_feedback' }].to_json, headers: json)
+
+      definitions = client.get_listing_custom_field_definitions(listing_id: 1, params: { record_type: 'stay_feedback' })
+      expect(definitions.first['record_type']).to eq('stay_feedback')
+    end
+
     it 'raises an ArgumentError when the listing id is blank' do
       expect { client.get_listing_custom_field_definitions(listing_id: '') }
         .to raise_error(ArgumentError, 'ID cannot be blank')

@@ -35,6 +35,18 @@ describe UpwoofListings::DSL::PricingRules do
     expect(client.create_listing_pricing_rule(listing_id: 1, params: params)['name']).to eq('Big dogs')
   end
 
+  it 'creates a rule with stay and customer tag conditions' do
+    params = { name: 'Long VIP stays', customer_tag_ids: [5], minimum_nights: 7, minimum_pets: 2,
+               minimum_weight_lbs: 40.5, stacking_mode: 'exclusive_stay_adjustment' }
+    stub_request(:post, "#{rules_url}?access_token=#{api_key}")
+      .with(body: params.to_json)
+      .to_return(status: 201, body: params.merge(id: 5).to_json, headers: json)
+
+    rule = client.create_listing_pricing_rule(listing_id: 1, params: params)
+    expect(rule['customer_tag_ids']).to eq([5])
+    expect(rule['minimum_weight_lbs']).to eq(40.5)
+  end
+
   it 'patches a rule, clearing a field' do
     stub_request(:patch, "#{rules_url}/3?access_token=#{api_key}")
       .with(body: { customer_id: nil }.to_json)

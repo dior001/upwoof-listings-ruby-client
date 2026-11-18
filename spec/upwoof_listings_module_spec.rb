@@ -10,7 +10,7 @@ describe UpwoofListings do
     load File.expand_path('../lib/upwoof_listings/version.rb', __dir__)
     $VERBOSE = original_verbose
 
-    expect(UpwoofListings::VERSION).to eq('0.12.0')
+    expect(UpwoofListings::VERSION).to eq('0.13.0')
   end
 
   it 'reads and writes the api_key accessor' do

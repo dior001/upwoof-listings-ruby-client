@@ -31,7 +31,9 @@ module UpwoofListings
 
     # POST /listings/{id}/pricing_rules
     # name required. A rule needs at least one condition (animal_type_id, breed_ids, min_age_months,
-    # max_age_months, customer_id, or neuter_status other than any_status); a refused rule raises
+    # max_age_months, customer_id, customer_tag_ids (the listing's own tags), minimum_nights, minimum_pets,
+    # minimum_weight_lbs, or neuter_status other than any_status); stacking_mode is one of standard, stack,
+    # override, best_of, exclusive_stay_adjustment. A refused rule (including another listing's tag) raises
     # {UpwoofListings::Errors::ValidationError} (HTTP 422).
     # @param [String] listing_id A listing's ID.
     # @param [Hash] params Pricing rule attributes.
@@ -44,7 +46,8 @@ module UpwoofListings
     end
 
     # PATCH /listings/{id}/pricing_rules/{pricing_rule_id}
-    # Changes only the fields sent; send nil to clear an optional one.
+    # Changes only the fields sent; send nil to clear an optional one (an empty customer_tag_ids clears the tag
+    # condition).
     # @param [String] listing_id A listing's ID.
     # @param [String] pricing_rule_id A pricing rule's ID.
     # @param [Hash] params Pricing rule attributes.
