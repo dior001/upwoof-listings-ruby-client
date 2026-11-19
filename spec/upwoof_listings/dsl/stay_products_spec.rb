@@ -41,6 +41,24 @@ describe UpwoofListings::DSL::StayProducts do
       }
   end
 
+  it 'changes how many of a product a stay carries' do
+    stub_request(:patch, "#{items_url}/6?access_token=#{api_key}")
+      .with(body: { quantity: 3 }.to_json)
+      .to_return(status: 200, body: { id: 6, quantity: 3, unit_price_cents: 1200 }.to_json, headers: json)
+
+    item = client.patch_reservation_retail_item(reservation_id: 3, retail_item_id: 6, params: { quantity: 3 })
+    expect(item).to be_a(ReservationRetailItem)
+    expect(item['quantity']).to eq(3)
+  end
+
+  it 'raises a ValidationError when there is not enough in stock' do
+    stub_request(:patch, "#{items_url}/6?access_token=#{api_key}")
+      .to_return(status: 422, body: { errors: ['Not enough in stock'] }.to_json, headers: json)
+
+    expect { client.patch_reservation_retail_item(reservation_id: 3, retail_item_id: 6, params: { quantity: 50 }) }
+      .to raise_error(UpwoofListings::Errors::ValidationError) { |error| expect(error.errors).to eq(['Not enough in stock']) }
+  end
+
   it 'removes a product from a stay' do
     stub_request(:delete, "#{items_url}/6?access_token=#{api_key}").to_return(status: 204)
 
@@ -52,6 +70,8 @@ describe UpwoofListings::DSL::StayProducts do
     expect { client.get_reservation_retail_items(reservation_id: '') }
       .to raise_error(ArgumentError, 'ID cannot be blank')
     expect { client.create_reservation_retail_item(reservation_id: '', params: {}) }
+      .to raise_error(ArgumentError, 'ID cannot be blank')
+    expect { client.patch_reservation_retail_item(reservation_id: 3, retail_item_id: '', params: { quantity: 1 }) }
       .to raise_error(ArgumentError, 'ID cannot be blank')
     expect { client.delete_reservation_retail_item(reservation_id: 3, retail_item_id: '') }
       .to raise_error(ArgumentError, 'ID cannot be blank')

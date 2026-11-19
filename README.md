@@ -48,6 +48,16 @@ rescue UpwoofListings::Errors::ValidationError => e
 end
 ```
 
+## Refunding an invoice that was paid in parts (changed in 0.14.0)
+
+An invoice can be paid in parts: cash, a check, a card reader, store credit, or online (`get_invoice_payments`).
+**Creating a credit note on a paid invoice that was taken in parts now needs `invoice_payment_id`**, the part the
+refund goes back through: a card reader part is refunded to its card, cash or a check is recorded as refunded out
+of band, and store credit is credited back to the customer. `create_credit_note` without it raises
+`ValidationError` (HTTP 422, "Payment to refund must be chosen: ..."), as does naming more than the part has left to
+refund; a part that isn't the invoice's own raises `ResourceNotFoundError`. Code that created credit notes on such
+an invoice before 0.14.0 must now pass the part. An invoice paid in one go online is unchanged.
+
 ## Pagination
 
 List methods take `page` and `per_page` params. The API returns at most 100 records a page (default 20),
@@ -104,7 +114,19 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
 * Pricing rules also take stay conditions `minimum_nights`, `minimum_pets`, `minimum_weight_lbs`, and
   `stacking_mode` `exclusive_stay_adjustment`.
 * Shop products on a stay: `get_listing_stay_products`, `get_reservation_retail_items`,
-  `create_reservation_retail_item`, `delete_reservation_retail_item`.
+  `create_reservation_retail_item`, `patch_reservation_retail_item` (changes the `quantity`, 1-99, at the price
+  it was added at, while the stay's order is still open; the customer isn't told), `delete_reservation_retail_item`.
+  Adding a product already on the stay raises `ValidationError`; change its quantity instead.
+* Split payments: `get_invoice_payments` (any team member), `create_invoice_payment` (records part of an open
+  invoice taken in `cash` or by `check`; `amount_cents` defaults to everything still owed) and
+  `refund_invoice_payment` (refunds one part while the invoice is still open; what is refunded is owed again).
+  Recording and refunding need owner/manager with two-factor authentication on. A part's `tender` is
+  `card_online`, `card_reader`, `cash`, `check` or `store_credit`; `refundable_cents`, `refunded_cents` and
+  `net_amount_cents` say what is left. See "Refunding an invoice that was paid in parts" above.
+* Attendance confirmations ("still coming?" requests, read only): `get_reservation_attendance_confirmations`,
+  `get_listing_attendance_confirmations` (filter by `date` and `status`: `pending`, `confirmed`, `declined`).
+  `visit_on` is the daycare day asked about (nil for the whole stay); `visit_date` is that day or the stay's
+  first day.
 * A customer's `billing_address`, `email`, `phone_number` and `physical_address`, and an order's
   `order_line_items`, `price_cents` and `uw_fee_amount_cents`, are nil for a staff member whose permission
   group hides customers' contact details or a stay's charges.
