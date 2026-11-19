@@ -36,6 +36,8 @@ require 'upwoof_listings/dsl/play_yards'
 require 'upwoof_listings/dsl/authorized_pickups'
 require 'upwoof_listings/dsl/customer_tags'
 require 'upwoof_listings/dsl/stay_products'
+require 'upwoof_listings/dsl/invoice_payments'
+require 'upwoof_listings/dsl/attendance_confirmations'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -72,6 +74,8 @@ module UpwoofListings
     include AuthorizedPickups
     include CustomerTags
     include StayProducts
+    include InvoicePayments
+    include AttendanceConfirmations
     include Utils
   end
 end

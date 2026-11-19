@@ -22,7 +22,10 @@ module UpwoofListings
     end
 
     # POST /credit_notes
-    # Create a credit note.
+    # Create a credit note. For a paid invoice taken in parts (cash, check or card reader parts), invoice_payment_id
+    # is required: the part (from get_invoice_payments) the refund goes back through. Omitting it, or naming more than
+    # the part has left to refund, raises {UpwoofListings::Errors::ValidationError} (HTTP 422); a part that isn't the
+    # invoice's own raises {UpwoofListings::Errors::ResourceNotFoundError}.
     # @param [Hash] params Credit note attributes.
     # @return [UpwoofListings::Resources::CreditNote, nil].
     def create_credit_note(params:)
