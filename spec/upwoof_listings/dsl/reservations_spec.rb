@@ -87,6 +87,48 @@ describe UpwoofListings::DSL::Reservations do
     end
   end
 
+  describe '#cancel_reservation' do
+    it 'cancels a reservation, applying the listing\'s own policy by default' do
+      stub_request(:post, "#{base_url}/reservations/2/cancel?access_token=#{api_key}")
+        .with(body: { reason: 'Customer called to cancel' }.to_json)
+        .to_return(status: 200, body: { id: 2, workflow_state: 'canceled_without_charge' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      reservation = client.cancel_reservation(id: 2, reason: 'Customer called to cancel')
+      expect(reservation).to be_a(Reservation)
+      expect(reservation['workflow_state']).to eq('canceled_without_charge')
+    end
+
+    it 'sends mode when given' do
+      stub_request(:post, "#{base_url}/reservations/2/cancel?access_token=#{api_key}")
+        .with(body: { reason: 'Goodwill refund', mode: 'full_refund' }.to_json)
+        .to_return(status: 200, body: { id: 2, workflow_state: 'canceled_without_charge' }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      reservation = client.cancel_reservation(id: 2, reason: 'Goodwill refund', mode: 'full_refund')
+      expect(reservation).to be_a(Reservation)
+    end
+
+    it 'raises ArgumentError without an id' do
+      expect { client.cancel_reservation(id: nil, reason: 'Why') }.to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError without a reason' do
+      expect { client.cancel_reservation(id: 2, reason: nil) }.to raise_error(ArgumentError)
+    end
+
+    it 'raises a ValidationError when the cancellation itself is refused' do
+      stub_request(:post, "#{base_url}/reservations/2/cancel?access_token=#{api_key}")
+        .to_return(status: 422, body: { errors: ['cannot cancel'] }.to_json,
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect { client.cancel_reservation(id: 2, reason: 'Why') }
+        .to raise_error(UpwoofListings::Errors::ValidationError) { |error|
+          expect(error.errors).to eq(['cannot cancel'])
+        }
+    end
+  end
+
   # DELETE /reservations/{id} was removed from the API (there is no way to delete a reservation):
   # confirm the client doesn't offer a method that would only ever 404.
   it 'has no #delete_reservation method' do
