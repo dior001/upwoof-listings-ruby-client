@@ -62,5 +62,27 @@ module UpwoofListings
 
       Resources::Reservation.parse(request(:patch, "reservations/#{id}", params))
     end
+
+    # POST /reservations/{id}/cancel
+    # Cancel an awaiting_review or confirmed reservation on the listing's own behalf: a phone cancellation, or
+    # an off-platform booking with no customer login to cancel it themselves. mode apply_policy (the default)
+    # applies the listing's own cancellation policy, exactly as a customer self-cancelling would; mode
+    # full_refund (owner/manager only) overrides it and refunds any deposit paid in full, regardless of the
+    # cancellation window.
+    # @raise [ArgumentError] If id or reason is blank.
+    # @raise [UpwoofListings::Errors::ValidationError] (HTTP 422) If the cancellation itself is refused (e.g.
+    #   an unrefunded payment blocks it); its reasons are in #errors.
+    # @param [String] id A reservation's ID.
+    # @param [String] reason Why the reservation is being cancelled.
+    # @param [String] mode (optional) apply_policy (the default) or full_refund.
+    # @return [UpwoofListings::Resources::Reservation, nil].
+    def cancel_reservation(id:, reason:, mode: nil)
+      raise ArgumentError, 'ID cannot be blank' if id.blank?
+      raise ArgumentError, 'Reason cannot be blank' if reason.blank?
+
+      params = { reason: reason }
+      params[:mode] = mode if mode.present?
+      Resources::Reservation.parse(request(:post, "reservations/#{id}/cancel", params))
+    end
   end
 end
