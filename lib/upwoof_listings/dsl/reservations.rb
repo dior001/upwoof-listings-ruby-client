@@ -22,10 +22,13 @@ module UpwoofListings
     end
 
     # POST /reservations
-    # Create a reservation. An inactive (deactivated) pet_id raises
-    # {UpwoofListings::Errors::ValidationError} (HTTP 422, "Inactive pets can't be booked: <name>") and nothing
-    # is created.
-    # @param [Hash] params Reservation attributes.
+    # Book a confirmed stay, as a team member booking it would: the optional accommodation_id (else the best fit
+    # for the pet), the day's first drop-off and last pick-up window, and its order. A stay that can't be booked
+    # (an inactive pet, a full or closed unit, the daily dog or cat limit, a restricted breed, a missing
+    # evaluation, another listing's accommodation) raises {UpwoofListings::Errors::ValidationError} (HTTP 422,
+    # its error code and message say why) and nothing is created.
+    # @param [Hash] params customer_id, listing_id, pet_id, when_reservation_start, when_reservation_finish and an
+    #   optional accommodation_id.
     # @return [UpwoofListings::Resources::Reservation, nil].
     def create_reservation(params:)
       Resources::Reservation.parse(request(:post, 'reservations/', params))
