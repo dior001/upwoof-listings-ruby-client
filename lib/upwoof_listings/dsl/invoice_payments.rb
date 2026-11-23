@@ -7,7 +7,8 @@ module UpwoofListings
   # listing; recording and refunding a part need owner/manager with two-factor authentication on (else
   # {UpwoofListings::Errors::ClientError}, HTTP 403, as for an invoice that isn't open). An invoice or part that isn't
   # reachable raises {UpwoofListings::Errors::ResourceNotFoundError}. A part's tender is card_online, card_reader,
-  # cash, check or store_credit.
+  # cash, check, store_credit or gift_card (paid from a gift card at the front desk; refunding it puts the value back
+  # on the card).
   module DSL::InvoicePayments
     # GET /invoices/{id}/payments
     # Oldest first.

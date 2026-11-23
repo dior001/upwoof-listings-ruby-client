@@ -71,12 +71,23 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
 * Pet evaluations: `get_pet_evaluations`, `get_pet_evaluation`, `create_reservation_pet_evaluation`.
 * Pet deactivation: `deactivate_pet` (`passed_away`, `rehomed` or `other`), `reactivate_pet`. Booking an inactive
   pet (`create_reservation`, or `update_reservation` when every pet is inactive) raises `ValidationError`.
+  `delete_pet` raises `ValidationError` (`body['error']` `pet_has_history`) for a pet with any stay or listing
+  record; deactivate such a pet instead.
+* Recurring bookings: `get_recurring_reservation_schedules` (filter by `active`, `customer_id`, `listing_id`),
+  `get_recurring_reservation_schedule`, `create_recurring_reservation_schedule` (books the first four weeks of
+  dates at once, awaiting review, and emails the customer) and `patch_recurring_reservation_schedule` (`weekdays`,
+  `interval`, `pet_ids`, `end_date`; dates no longer booked that still await review are cancelled). `weekdays` are
+  `monday` to `sunday`, `interval` 1 to 4 weeks.
+* Accommodations: `create_accommodation` and `delete_accommodation` are owner/manager only (a staff member's
+  token raises `ClientError`, HTTP 403).
 * Store credit: `get_customer_store_credit`, `get_customer_store_credit_transactions`,
   `adjust_customer_store_credit` (owner/manager with two-factor authentication on).
 * Pricing rules (owner/manager): `get_listing_pricing_rules`, `get_listing_pricing_rule`,
   `create_listing_pricing_rule`, `patch_listing_pricing_rule`, `delete_listing_pricing_rule`.
-* Membership plans (read only): `get_listing_membership_plans`, `get_listing_membership_plan`. Invoice line
-  items carry `discount` and `order_line_item_type` (e.g. `MembershipDiscountOrderLineItem`).
+* Membership plans (read only): `get_listing_membership_plans`, `get_listing_membership_plan`. A plan's
+  `credit_uses` lists what a credit pays for (`stays`, `classes`, `lessons`, `grooming`); `credit_use` and
+  `credits_cover_lessons` are deprecated, derived from it. Invoice line items carry `discount` and
+  `order_line_item_type` (e.g. `MembershipDiscountOrderLineItem`).
 * Custom fields: `get_listing_custom_field_definitions`, `update_customer_custom_fields`,
   `update_pet_custom_fields`, `update_reservation_custom_fields`. Customers, pets and reservations carry their
   answers in `custom_fields`.
@@ -103,7 +114,9 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   `get_listing_tour_hosts`; a tour takes no `pet_ids`) and transport (`..._transport_...`,
   `get_listing_transport_drivers`; a trip takes a pickup and optional drop-off address). A booking that takes a
   deposit comes back `pending_payment` with a `checkout_url` to send the customer to (also for a customer with no
-  UpWoof account); pass `success_url`/`cancel_url` (https) for where they return to.
+  UpWoof account); pass `success_url`/`cancel_url` (https) for where they return to. Grooms and lessons take
+  `pay_with_membership_credits` (one household membership credit an appointment, no deposit). An appointment's
+  `status` may be `no_show`.
 * Authorized pickups (any team member, `listing_id` required): `get_customer_authorized_pickups`,
   `get_customer_authorized_pickup`, `create_customer_authorized_pickup`, `patch_customer_authorized_pickup`,
   `delete_customer_authorized_pickup`.
@@ -121,8 +134,8 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   invoice taken in `cash` or by `check`; `amount_cents` defaults to everything still owed) and
   `refund_invoice_payment` (refunds one part while the invoice is still open; what is refunded is owed again).
   Recording and refunding need owner/manager with two-factor authentication on. A part's `tender` is
-  `card_online`, `card_reader`, `cash`, `check` or `store_credit`; `refundable_cents`, `refunded_cents` and
-  `net_amount_cents` say what is left. See "Refunding an invoice that was paid in parts" above.
+  `card_online`, `card_reader`, `cash`, `check`, `store_credit` or `gift_card` (refunding a gift card part puts the
+  value back on the card); `refundable_cents`, `refunded_cents` and `net_amount_cents` say what is left. See "Refunding an invoice that was paid in parts" above.
 * Attendance confirmations ("still coming?" requests, read only): `get_reservation_attendance_confirmations`,
   `get_listing_attendance_confirmations` (filter by `date` and `status`: `pending`, `confirmed`, `declined`).
   `visit_on` is the daycare day asked about (nil for the whole stay); `visit_date` is that day or the stay's

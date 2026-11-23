@@ -52,7 +52,9 @@ module UpwoofListings
     end
 
     # DELETE /pets/{id}
-    # Delete a pet.
+    # Delete a pet. Raises {UpwoofListings::Errors::ValidationError} (HTTP 422, body['error'] pet_has_history) when
+    # the pet has any stay or listing record (incident, vaccination record, evaluation, care log, grooming, training,
+    # report card, staff note...); such a pet can only be deactivated (deactivate_pet).
     # @param [String] id A pet's ID.
     # @return [Boolean].
     def delete_pet(id:)

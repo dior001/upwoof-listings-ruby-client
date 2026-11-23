@@ -22,7 +22,8 @@ module UpwoofListings
     end
 
     # POST /accommodations
-    # Create a accommodation.
+    # Create a accommodation. Owner/manager only: a staff member's token raises
+    # {UpwoofListings::Errors::ClientError} (HTTP 403).
     # @param [Hash] params Accommodation attributes.
     # @return [UpwoofListings::Resources::Accommodation, nil].
     def create_accommodation(params:)
@@ -52,7 +53,8 @@ module UpwoofListings
     end
 
     # DELETE /accommodations/{id}
-    # Delete a accommodation.
+    # Delete a accommodation. Owner/manager only: a staff member's token raises
+    # {UpwoofListings::Errors::ClientError} (HTTP 403).
     # @param [String] id A accommodation's ID.
     # @return [Boolean].
     def delete_accommodation(id:)
