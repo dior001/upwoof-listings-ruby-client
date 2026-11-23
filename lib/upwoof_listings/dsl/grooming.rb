@@ -9,8 +9,10 @@ module UpwoofListings
   # method raises {UpwoofListings::Errors::ResourceNotFoundError} when the caller isn't on the listing's team.
   #
   # Open times: date (YYYY-MM-DD, the listing's zone), customer_id and service_type_ids required, pet_ids required
-  # for every kind but tours (a tour has no pet), groomer_id optional (omit for any provider), and for lessons
-  # pay_with_membership_credits. A deposit_cents above 0 means the booking will be held for a deposit.
+  # for every kind but tours (a tour has no pet), groomer_id optional (omit for any provider), and for grooms and
+  # lessons pay_with_membership_credits (pay with the customer's household's membership credits, one a groom or
+  # lesson, from plans whose credit_uses include grooming or lessons; no deposit is then taken). A deposit_cents above
+  # 0 means the booking will be held for a deposit.
   #
   # Booking: the open-times params without date, plus starts_at (ISO 8601, one of the open start times); optional
   # success_url/cancel_url (full https addresses, at most 2000 characters; the success URL may carry Stripe's
@@ -18,11 +20,12 @@ module UpwoofListings
   # comes back pending_payment (deposit_status pending) with a checkout_url to send the customer to; paying makes
   # it scheduled, an expired or failed payment cancels it. Raises {UpwoofListings::Errors::ValidationError}
   # (HTTP 422) for a bad pet, service or provider, too many appointments, a time that isn't open, a needed
-  # evaluation a pet hasn't passed, a transport pickup address missing, no membership credit (lessons), or Stripe
-  # refusing to start the payment (nothing booked).
+  # evaluation a pet hasn't passed, a transport pickup address missing, not enough membership credits (no_credit),
+  # or Stripe refusing to start the payment (nothing booked).
   #
   # Appointment lists: optional customer_id, ids, status (scheduled, confirmed, in_progress, completed, cancelled,
-  # pending_payment), page, per_page; newest start first, checkout_url always nil.
+  # pending_payment, no_show: a booked appointment the customer never came to), page, per_page; newest start first,
+  # checkout_url always nil.
   module DSL::Grooming
     # GET /listings/{id}/grooming/services
     # Active grooming services bookable online, by name.
@@ -45,9 +48,9 @@ module UpwoofListings
     end
 
     # GET /listings/{id}/grooming/open_times
-    # Raises {UpwoofListings::Errors::ResourceNotFoundError} for a customer that isn't the listing's and
-    # {UpwoofListings::Errors::ValidationError} (HTTP 422) for a bad pet, service or groomer, too many grooms, or a
-    # service needing an evaluation a pet hasn't passed.
+    # pay_with_membership_credits optional. Raises {UpwoofListings::Errors::ResourceNotFoundError} for a customer that
+    # isn't the listing's and {UpwoofListings::Errors::ValidationError} (HTTP 422) for a bad pet, service or groomer,
+    # too many grooms, a service needing an evaluation a pet hasn't passed, or not enough membership credits.
     # @param [String] listing_id A listing's ID.
     # @param [Hash] params See the module comment.
     # @raise [ArgumentError] If the method arguments are blank.

@@ -38,6 +38,7 @@ require 'upwoof_listings/dsl/customer_tags'
 require 'upwoof_listings/dsl/stay_products'
 require 'upwoof_listings/dsl/invoice_payments'
 require 'upwoof_listings/dsl/attendance_confirmations'
+require 'upwoof_listings/dsl/recurring_reservation_schedules'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -76,6 +77,7 @@ module UpwoofListings
     include StayProducts
     include InvoicePayments
     include AttendanceConfirmations
+    include RecurringReservationSchedules
     include Utils
   end
 end

@@ -4,6 +4,10 @@ require 'upwoof_listings/dsl'
 
 module UpwoofListings
   # A listing's membership plans, read only (team members of the listing; else ClientError, HTTP 403).
+  #
+  # credit_uses lists what a credit pays for, any of stays, classes (training class enrollments), lessons (private
+  # lessons) and grooming; it is empty only on a discount-only plan. credit_use and credits_cover_lessons are
+  # deprecated (derived from credit_uses, and credit_use can't express grooming or lessons): read credit_uses.
   module DSL::MembershipPlans
     # GET /listings/{id}/membership_plans
     # Active and inactive plans, by name then id.
