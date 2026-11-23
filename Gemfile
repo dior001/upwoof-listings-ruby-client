@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 gem 'rubocop', group: 'development', require: false
 
-ruby "4.0.5"
+ruby "4.0.10"
 
 gem 'cgi'
 gem 'simplecov', require: false, group: 'development'
