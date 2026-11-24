@@ -10,7 +10,7 @@ module UpwoofListings
   # {UpwoofListings::Errors::ResourceNotFoundError} for an appointment that isn't the listing's of that kind and
   # {UpwoofListings::Errors::ValidationError} (HTTP 422) for one that can't be marked.
   module DSL::AppointmentNoShows
-    # POST /listings/{id}/grooming/appointments/{appointment_id}/no_show
+    # POST /listings/{id}/grooming/appointments/{visit_id}/no_show
     # @param [String] listing_id A listing's ID.
     # @param [String] appointment_id A groom's ID.
     # @raise [ArgumentError] If the method arguments are blank.
@@ -19,7 +19,7 @@ module UpwoofListings
       mark_no_show(listing_id, 'grooming', appointment_id)
     end
 
-    # POST /listings/{id}/lessons/appointments/{appointment_id}/no_show
+    # POST /listings/{id}/lessons/appointments/{visit_id}/no_show
     # @param [String] listing_id A listing's ID.
     # @param [String] appointment_id A private lesson's ID.
     # @raise [ArgumentError] If the method arguments are blank.
@@ -28,7 +28,7 @@ module UpwoofListings
       mark_no_show(listing_id, 'lessons', appointment_id)
     end
 
-    # POST /listings/{id}/tours/appointments/{appointment_id}/no_show
+    # POST /listings/{id}/tours/appointments/{visit_id}/no_show
     # @param [String] listing_id A listing's ID.
     # @param [String] appointment_id A facility tour's ID.
     # @raise [ArgumentError] If the method arguments are blank.
@@ -37,7 +37,7 @@ module UpwoofListings
       mark_no_show(listing_id, 'tours', appointment_id)
     end
 
-    # POST /listings/{id}/transports/appointments/{appointment_id}/no_show
+    # POST /listings/{id}/transports/appointments/{visit_id}/no_show
     # @param [String] listing_id A listing's ID.
     # @param [String] appointment_id A pet transport trip's ID.
     # @raise [ArgumentError] If the method arguments are blank.

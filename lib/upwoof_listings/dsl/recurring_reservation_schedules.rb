@@ -86,7 +86,7 @@ module UpwoofListings
       )
     end
 
-    # DELETE /recurring_reservation_schedules/{id}/skipped_dates/{date}
+    # DELETE /recurring_reservation_schedules/{id}/skipped_dates/{skipped_date}
     # Restore a skipped date; it is booked again straight away when within the next four weeks. Raises
     # {UpwoofListings::Errors::ValidationError} (HTTP 422) when the date isn't skipped or the schedule is stopped.
     # @param [String] id A recurring reservation schedule's ID.
