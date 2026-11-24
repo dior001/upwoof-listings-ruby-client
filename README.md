@@ -76,8 +76,26 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
 * Recurring bookings: `get_recurring_reservation_schedules` (filter by `active`, `customer_id`, `listing_id`),
   `get_recurring_reservation_schedule`, `create_recurring_reservation_schedule` (books the first four weeks of
   dates at once, awaiting review, and emails the customer) and `patch_recurring_reservation_schedule` (`weekdays`,
-  `interval`, `pet_ids`, `end_date`; dates no longer booked that still await review are cancelled). `weekdays` are
-  `monday` to `sunday`, `interval` 1 to 4 weeks.
+  `interval`, `pet_ids`, `end_date`; dates no longer booked that still await review, or confirmed themselves and
+  haven't started, are cancelled). `weekdays` are `monday` to `sunday`, `interval` 1 to 4 weeks. A schedule set up
+  over the API confirms its dates itself when they fit. `deactivate_recurring_reservation_schedule` stops one
+  (cancelling its stays still awaiting review, or confirmed themselves and not started, free of charge);
+  `skip_recurring_reservation_schedule_date` skips one upcoming date (within 90 days) and
+  `restore_recurring_reservation_schedule_date` restores a skipped one. A stopped schedule raises `ValidationError`.
+* Physical units (runs and kennels): an accommodation's `units` lists them (`id`, `name`, `sort`, `active`,
+  `needs_cleaning`); a reservation's `accommodation_assignments` (`id`, `accommodation_id`, `accommodation_unit`)
+  says which unit each booked accommodation is placed in. `update_reservation_unit_assignment` moves an
+  assignment to another active unit (or out of its unit, with no `accommodation_unit_id`); a unit another stay
+  holds raises `ValidationError`.
+* Care plans (any team member, `listing_id` required): `get_pet_feeding_plans`, `get_pet_feeding_plan`,
+  `create_pet_feeding_plan`, `patch_pet_feeding_plan`, `delete_pet_feeding_plan`, and the same five for
+  `..._pet_medication_plan...` (`frequency` `once_daily`, `twice_daily`, `three_times_daily` or `as_needed`;
+  `dose_times` "HH:MM"). They are copied onto each stay at check-in.
+* Care log: `get_reservation_care_log_entries` (filter by `date`, `entry_type`, `status`) and
+  `complete_care_log_entry` (`outcome` `ate_all`, `ate_some`, `ate_none`, `given` or `refused`; a medication's
+  `dose_given` and `administration_notes`, required when refused).
+* Credit notes: their amount fields now include any tax Stripe credits back with them (values only; no new
+  fields).
 * Accommodations: `create_accommodation` and `delete_accommodation` are owner/manager only (a staff member's
   token raises `ClientError`, HTTP 403).
 * Store credit: `get_customer_store_credit`, `get_customer_store_credit_transactions`,
@@ -93,7 +111,8 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   answers in `custom_fields`.
 * Special opening hours: `get_listing_special_opening_hours`.
 * Notification wording (owner/manager): `get_listing_notification_templates`,
-  `update_listing_notification_template`, `delete_listing_notification_template`.
+  `update_listing_notification_template`, `delete_listing_notification_template`. `notification_key` may be
+  `appointment_reminder` (the day-before appointment reminder; email and `any_type` only).
 * Training: `get_training_courses`, `get_training_course`, `get_training_course_sessions`,
   `get_training_course_enrollments`, `create_training_course_enrollment`, `get_training_course_waitlist_entries`,
   `get_training_enrollment`, `cancel_training_enrollment`.
@@ -116,7 +135,12 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   deposit comes back `pending_payment` with a `checkout_url` to send the customer to (also for a customer with no
   UpWoof account); pass `success_url`/`cancel_url` (https) for where they return to. Grooms and lessons take
   `pay_with_membership_credits` (one household membership credit an appointment, no deposit). An appointment's
-  `status` may be `no_show`.
+  `status` may be `no_show`; `mark_grooming_appointment_no_show`, `mark_lesson_no_show`, `mark_tour_no_show` and
+  `mark_transport_no_show` mark one whose start has passed (a held deposit is kept, owner/manager only; else the
+  listing's no-show fee is billed). `reminder_sent_at` says when its day-before reminder went out.
+* **Behaviour change (340):** `redeem_gift_card` now holds the card as a payment: the order's `price_cents` and
+  `order_line_items` no longer change, and the hold is listed in the order's `gift_card_holds` (`amount_cents`,
+  `currency`, `gift_card_id`, `invoice_payment_id`, `settled_at`, `reversed_at`).
 * Authorized pickups (any team member, `listing_id` required): `get_customer_authorized_pickups`,
   `get_customer_authorized_pickup`, `create_customer_authorized_pickup`, `patch_customer_authorized_pickup`,
   `delete_customer_authorized_pickup`.
