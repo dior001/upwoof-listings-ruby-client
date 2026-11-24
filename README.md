@@ -199,7 +199,7 @@ A `store_credit.balance_changed` event (one delivery per store credit ledger mov
 transaction) joins the reservation, invoice and credit note events a subscription can choose.
 
 ## Documentation
-https://pethotels.upwoof.com/api-docs/v1
+https://www.upwoof.com/api-docs/v1
 
 ## Contributing
 

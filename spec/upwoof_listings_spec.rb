@@ -12,8 +12,8 @@ describe UpwoofListings do
     # the reload so the final tally is accurate.
     before { load File.expand_path('../lib/upwoof_listings.rb', __dir__) }
 
-    it 'points at the pethotels.upwoof.com host' do
-      expect(UpwoofListings.url).to eq('https://pethotels.upwoof.com/api/v1/')
+    it 'points at the www.upwoof.com host' do
+      expect(UpwoofListings.url).to eq('https://www.upwoof.com/api/v1/')
     end
 
     it 'still builds a memoized client after reload' do

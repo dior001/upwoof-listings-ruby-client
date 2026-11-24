@@ -26,7 +26,7 @@ module UpwoofListings
     attr_accessor :url, :logger
   end
 
-  self.url = 'https://pethotels.upwoof.com/api/v1/'
+  self.url = 'https://www.upwoof.com/api/v1/'
 
   module_function
 
