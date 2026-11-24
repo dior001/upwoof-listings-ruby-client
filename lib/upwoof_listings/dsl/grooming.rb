@@ -25,7 +25,8 @@ module UpwoofListings
   #
   # Appointment lists: optional customer_id, ids, status (scheduled, confirmed, in_progress, completed, cancelled,
   # pending_payment, no_show: a booked appointment the customer never came to), page, per_page; newest start first,
-  # checkout_url always nil.
+  # checkout_url always nil. An appointment's reminder_sent_at is when its day-before reminder went to the customer
+  # (nil until then). To mark one a no-show, see {UpwoofListings::DSL::AppointmentNoShows}.
   module DSL::Grooming
     # GET /listings/{id}/grooming/services
     # Active grooming services bookable online, by name.

@@ -23,7 +23,8 @@ module UpwoofListings
     # PUT /listings/{id}/notification_templates
     # Create or update one row; fields not sent are left unchanged. Raises
     # {UpwoofListings::Errors::ResourceNotFoundError} for a pair the listing isn't offered (sms only for
-    # reservation_confirmed/upcoming_stay_reminder; grooming only for invoice_finalized/payment_received) and
+    # reservation_confirmed/upcoming_stay_reminder; grooming only for invoice_finalized/payment_received;
+    # appointment_reminder, the day-before appointment reminder, is email and any_type only) and
     # {UpwoofListings::Errors::ValidationError} (HTTP 422) for an unknown {{tag}}, a length over the limit, or
     # switching off a notification that can't be.
     # @param [String] listing_id A listing's ID.

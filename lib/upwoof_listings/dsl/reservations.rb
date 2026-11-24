@@ -87,5 +87,26 @@ module UpwoofListings
       params[:mode] = mode if mode.present?
       Resources::Reservation.parse(request(:post, "reservations/#{id}/cancel", params))
     end
+
+    # PATCH /reservations/{reservation_id}/unit_assignments/{unit_assignment_id}
+    # Place one of a stay's accommodation_assignments in a physical unit (run or kennel) of its accommodation, or,
+    # with no accommodation_unit_id, take it out of its unit. Any team member of the stay's listing. Raises
+    # {UpwoofListings::Errors::ResourceNotFoundError} for a stay that isn't at the caller's listings, an assignment
+    # that isn't the stay's, or a unit that isn't an active unit of its accommodation, and
+    # {UpwoofListings::Errors::ValidationError} (HTTP 422, "The unit is taken by another stay on some of these
+    # nights") when another stay holds the unit on any of this stay's nights.
+    # @param [String] reservation_id A reservation's ID.
+    # @param [String] unit_assignment_id The id of one of the reservation's accommodation_assignments.
+    # @param [String] accommodation_unit_id (optional) An active unit of that assignment's accommodation.
+    # @raise [ArgumentError] If the method arguments are blank.
+    # @return [UpwoofListings::Resources::ReservationAccommodationAssignment, nil].
+    def update_reservation_unit_assignment(reservation_id:, unit_assignment_id:, accommodation_unit_id: nil)
+      raise ArgumentError, 'ID cannot be blank' if reservation_id.blank? || unit_assignment_id.blank?
+
+      Resources::ReservationAccommodationAssignment.parse(
+        request(:patch, "reservations/#{reservation_id}/unit_assignments/#{unit_assignment_id}",
+                { accommodation_unit_id: accommodation_unit_id })
+      )
+    end
   end
 end
