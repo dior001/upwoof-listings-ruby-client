@@ -42,6 +42,7 @@ require 'upwoof_listings/dsl/recurring_reservation_schedules'
 require 'upwoof_listings/dsl/pet_care_plans'
 require 'upwoof_listings/dsl/care_log_entries'
 require 'upwoof_listings/dsl/appointment_no_shows'
+require 'upwoof_listings/dsl/email_addresses'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -84,6 +85,7 @@ module UpwoofListings
     include PetCarePlans
     include CareLogEntries
     include AppointmentNoShows
+    include EmailAddresses
     include Utils
   end
 end
