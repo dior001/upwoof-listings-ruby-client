@@ -184,6 +184,17 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   went to.
 * A customer's `upwoof_email_address` is their own UpWoof address (`<first-name>+<token>@upwoof.net`), nil when
   the caller's permission group hides customers' contact details.
+* AI assistants: an email address's `ai_role` (`front_desk`, `bookings`, `billing`, `grooming`, `training`,
+  `pet_care`; nil switches it off) puts an AI assistant on its email, set with `create_listing_email_address` or
+  `patch_listing_email_address` alongside `ai_instructions` (at most 2,000 characters) and `ai_review_required`
+  (false lets it act on its own when sure, and needs `ai_automatic_confirmation: true` in the same request). An
+  address also says `ai_active`, `ai_automatic_since` and `ai_automatic_enabled_by_user_id`. What the assistant
+  read and recommends are AI tasks: `get_listing_ai_tasks` (newest first; filter by `listing_email_address_id`
+  and `status`), `get_listing_ai_task` (adds `body_text` and `recommendation`), and for a task awaiting review
+  `approve_listing_ai_task` (an optional `params` key amends the recommended action's params),
+  `decline_listing_ai_task` (optional `note`) and `handle_listing_ai_task` (a task that needs a person). A
+  refusal is a `ValidationError` (`ai_task_refused` or `unknown_params`). A team member sees only the tasks of
+  the addresses they receive unless they are an owner or manager.
 
 ## Verifying webhooks
 
@@ -210,6 +221,9 @@ transaction) joins the reservation, invoice and credit note events a subscriptio
 
 An `inbound_email.received` event is sent for each email received at one of the listing's addresses; its
 `data` is the inbound email record `get_listing_inbound_emails` returns.
+
+`ai_task.awaiting_review`, `ai_task.needs_attention` and `ai_task.completed` are sent each time an AI task moves
+into that status; `data` is the task as `get_listing_ai_tasks` lists it (no `body_text` or `recommendation`).
 
 ## Documentation
 https://www.upwoof.com/api-docs/v1

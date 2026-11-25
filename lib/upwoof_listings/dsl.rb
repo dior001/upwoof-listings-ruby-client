@@ -43,6 +43,7 @@ require 'upwoof_listings/dsl/pet_care_plans'
 require 'upwoof_listings/dsl/care_log_entries'
 require 'upwoof_listings/dsl/appointment_no_shows'
 require 'upwoof_listings/dsl/email_addresses'
+require 'upwoof_listings/dsl/ai_tasks'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -86,6 +87,7 @@ module UpwoofListings
     include CareLogEntries
     include AppointmentNoShows
     include EmailAddresses
+    include AiTasks
     include Utils
   end
 end
