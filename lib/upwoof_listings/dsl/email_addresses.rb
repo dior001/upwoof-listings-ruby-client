@@ -37,7 +37,9 @@ module UpwoofListings
     # @param [String] listing_id A listing's ID.
     # @param [Hash] params name and role_key ([a-z][a-z0-9-]{1,29}, unique at the listing, not reserved) required;
     #   active (default true), recipient_scope (owners_and_managers, the default, all_team or selected),
-    #   selected_user_ids (team members, required when selected) and show_on_profile optional.
+    #   selected_user_ids (team members, required when selected), show_on_profile, and the AI assistant's ai_role,
+    #   ai_instructions and ai_review_required (false also needs ai_automatic_confirmation: true; see
+    #   {UpwoofListings::DSL::AiTasks}) optional.
     # @raise [ArgumentError] If the method arguments are blank.
     # @return [UpwoofListings::Resources::ListingEmailAddress, nil].
     def create_listing_email_address(listing_id:, params:)
@@ -51,7 +53,8 @@ module UpwoofListings
     # bookings_role_key) when changing the bookings address's role_key.
     # @param [String] listing_id A listing's ID.
     # @param [String] listing_email_address_id An email address's ID.
-    # @param [Hash] params Email address attributes.
+    # @param [Hash] params Email address attributes (the AI fields as for create; ai_role: nil switches the
+    #   assistant off).
     # @raise [ArgumentError] If the method arguments are blank.
     # @return [UpwoofListings::Resources::ListingEmailAddress, nil].
     def patch_listing_email_address(listing_id:, listing_email_address_id:, params:)
