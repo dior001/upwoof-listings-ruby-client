@@ -174,6 +174,16 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
 * Report cards for a whole day: `get_listing_report_cards`, `start_listing_report_cards`,
   `publish_listing_report_cards`; a card's photos: `get_report_card_photos`, `share_report_card_photo`,
   `unshare_report_card_photo` (the listing's website photo stream). Report cards carry `reservation_id`.
+* Email addresses (`<role_key>+<listing id>@upwoof.net`): `get_listing_email_addresses` (always includes
+  `bookings`), `get_listing_email_address`, and, for an owner/manager, `create_listing_email_address` (`name` and
+  `role_key` required; `recipient_scope` `owners_and_managers`, `all_team` or `selected` with
+  `selected_user_ids`; `active`, `show_on_profile`), `patch_listing_email_address` and
+  `delete_listing_email_address`. The bookings address can't be deleted or have its `role_key` changed
+  (`ValidationError`). `get_listing_inbound_emails` lists the emails received, newest first (filter by
+  `outcome` and `since`); each says its `outcome`, `reason`, sender and the `conversation_id` or `lead_id` it
+  went to.
+* A customer's `upwoof_email_address` is their own UpWoof address (`<first-name>+<token>@upwoof.net`), nil when
+  the caller's permission group hides customers' contact details.
 
 ## Verifying webhooks
 
@@ -197,6 +207,9 @@ head :bad_request unless verified
 
 A `store_credit.balance_changed` event (one delivery per store credit ledger movement, `data` the store credit
 transaction) joins the reservation, invoice and credit note events a subscription can choose.
+
+An `inbound_email.received` event is sent for each email received at one of the listing's addresses; its
+`data` is the inbound email record `get_listing_inbound_emails` returns.
 
 ## Documentation
 https://www.upwoof.com/api-docs/v1
