@@ -44,6 +44,7 @@ require 'upwoof_listings/dsl/care_log_entries'
 require 'upwoof_listings/dsl/appointment_no_shows'
 require 'upwoof_listings/dsl/email_addresses'
 require 'upwoof_listings/dsl/ai_tasks'
+require 'upwoof_listings/dsl/conversations'
 require 'upwoof_listings/utils'
 require 'mime-types'
 
@@ -88,6 +89,7 @@ module UpwoofListings
     include AppointmentNoShows
     include EmailAddresses
     include AiTasks
+    include Conversations
     include Utils
   end
 end
