@@ -10,6 +10,7 @@ require 'upwoof_listings/dsl/credit_notes'
 require 'upwoof_listings/dsl/customers'
 require 'upwoof_listings/dsl/invoices'
 require 'upwoof_listings/dsl/listings'
+require 'upwoof_listings/dsl/listing_websites'
 require 'upwoof_listings/dsl/orders'
 require 'upwoof_listings/dsl/pets'
 require 'upwoof_listings/dsl/reservations'
@@ -18,7 +19,6 @@ require 'upwoof_listings/dsl/users'
 require 'upwoof_listings/dsl/accommodation_types'
 require 'upwoof_listings/dsl/animal_types'
 require 'upwoof_listings/dsl/breeds'
-require 'upwoof_listings/dsl/uw_listing_cms_apps'
 require 'upwoof_listings/dsl/vaccination_records'
 require 'upwoof_listings/dsl/waiver_signatures'
 require 'upwoof_listings/dsl/report_cards'
@@ -54,6 +54,7 @@ module UpwoofListings
     include Customers
     include Invoices
     include Listings
+    include ListingWebsites
     include Orders
     include Pets
     include Reservations
@@ -62,7 +63,6 @@ module UpwoofListings
     include AccommodationTypes
     include AnimalTypes
     include Breeds
-    include UwListingCmsApps
     include VaccinationRecords
     include WaiverSignatures
     include ReportCards

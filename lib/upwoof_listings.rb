@@ -14,6 +14,7 @@ require 'upwoof_listings/version'
 
 module UpwoofListings
   autoload :Client, 'upwoof_listings/client'
+  autoload :SiteClient, 'upwoof_listings/site_client'
   autoload :DSL, 'upwoof_listings/dsl'
   autoload :Resources, 'upwoof_listings/resources'
   autoload :Errors, 'upwoof_listings/errors'

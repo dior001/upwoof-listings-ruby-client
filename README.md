@@ -195,6 +195,43 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   `decline_listing_ai_task` (optional `note`) and `handle_listing_ai_task` (a task that needs a person). A
   refusal is a `ValidationError` (`ai_task_refused` or `unknown_params`). A team member sees only the tasks of
   the addresses they receive unless they are an owner or manager.
+* Listing websites (owner/manager): `get_listing_website` (its `subdomain`, `primary_host`, `public_url`,
+  `admin_url`, `status`, `theme`, `palette`, `bookings_enabled`, `custom_domain`, `custom_domain_status`,
+  `monthly_price` and billing fields; never its secrets) and `update_listing_website` (`theme` `classic`, `modern`
+  or `playful`; `palette` `primary`, `secondary`, `accent` as `#rrggbb`, blank for the theme's own; `bookings_enabled`;
+  `custom_domain`, blank to detach). A listing with no website raises `ResourceNotFoundError`; a refused domain
+  raises `ValidationError` (`custom_domain_refused`).
+* **Removed in 0.21.0:** the Heroku listing CMS app methods (`get_uw_listing_cms_apps` and the rest) and the
+  `UwListingCmsApp` resource. The listing website replaces them.
+
+## The site API (listing websites)
+
+A listing's UpWoof website talks to `/api/v1/site` with its own site token (`UPWOOF_SITE_TOKEN`), not an API key.
+`UpwoofListings::SiteClient` sends it as `Authorization: Bearer <token>` (never in the URL):
+
+```ruby
+site = UpwoofListings::SiteClient.new(ENV.fetch('UPWOOF_SITE_TOKEN'))
+site.get_site_config        # theme, palette, hosts, status, bookings_enabled
+site.get_site_listing       # name, contact details, address, opening hours, special hours, photos, rating, policies
+site.get_site_accommodations
+site.get_site_reviews(page: 2)
+site.get_site_availability(params: { check_in: '2026-12-07', check_out: '2026-12-09', dogs: 1, cats: 0 })
+site.create_site_booking_request(params: { check_in: '2026-12-07', check_out: '2026-12-09', accommodation_id: 3,
+                                           drop_off_window_id: 11, pick_up_window_id: 12,
+                                           owner: { first_name: 'Ana', last_name: 'Hika', email: 'ana@example.com',
+                                                    phone: '+64 21 555 0100' },
+                                           pets: [{ name: 'Tama', species: 'dog', breed: 'Huntaway', weight_kg: 20 }],
+                                           accepted_terms: true },
+                                 visitor_ip: request.remote_ip)
+site.create_site_inquiry(params: { first_name: 'Ana', last_name: 'Hika', email: 'ana@example.com',
+                                   phone: '+64 21 555 0100', message: 'Do you take puppies?' })
+```
+
+A booking request makes a reservation awaiting the listing's review. A refusal raises `ValidationError`, its
+`body['error']` one of `bookings_disabled`, `invalid`, `unavailable`, `breed_not_accepted`, `evaluation_required`,
+`customer_refused` or `terms_not_accepted` (inquiries: `inquiries_disabled` or `invalid`). A bad token raises
+`ClientError` (401), and too many requests `ClientError` (429, `rate_limited`). Pass the visitor's address as
+`visitor_ip`: booking requests and inquiries are limited to 10 a minute per token and visitor.
 
 ## Verifying webhooks
 
