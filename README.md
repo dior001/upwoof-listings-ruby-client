@@ -203,6 +203,13 @@ Besides the CRUD methods for each core resource (`get_<resources>`, `get_<resour
   raises `ValidationError` (`custom_domain_refused`).
 * **Removed in 0.21.0:** the Heroku listing CMS app methods (`get_uw_listing_cms_apps` and the rest) and the
   `UwListingCmsApp` resource. The listing website replaces them.
+* Conversations: `get_listing_conversations` lists a listing's conversations, most recently active first (filter
+  by `customer_id` and `updated_since`), each with its `participants` (`customer_id`, `name`, `kind`:
+  `team_member` or `customer`) and the `listing_email_address` it started at; `get_listing_conversation` adds every
+  message, oldest first (`body`, `origin`: `web`, `email`, `automated`, `ai` or `api`, and the sender's id, name
+  and kind). `create_listing_conversation_message` replies to everyone in it as you (`params: { body: '...' }`,
+  at most 20,000 characters, origin `api`); you must take part in the conversation (else a `ClientError`, HTTP
+  403 `not_a_participant`), and 30 replies per 10 minutes per token are allowed. Any team member may read.
 
 ## The site API (listing websites)
 
@@ -257,7 +264,8 @@ A `store_credit.balance_changed` event (one delivery per store credit ledger mov
 transaction) joins the reservation, invoice and credit note events a subscription can choose.
 
 An `inbound_email.received` event is sent for each email received at one of the listing's addresses; its
-`data` is the inbound email record `get_listing_inbound_emails` returns.
+`data` is the inbound email record `get_listing_inbound_emails` returns. Its `conversation_id` (and `message_id`)
+lead into `get_listing_conversation` and `create_listing_conversation_message`, to read the thread and answer it.
 
 `ai_task.awaiting_review`, `ai_task.needs_attention` and `ai_task.completed` are sent each time an AI task moves
 into that status; `data` is the task as `get_listing_ai_tasks` lists it (no `body_text` or `recommendation`).
