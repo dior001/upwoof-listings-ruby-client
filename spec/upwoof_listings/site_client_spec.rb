@@ -31,6 +31,16 @@ describe UpwoofListings::SiteClient do
     expect(client.get_site_accommodations.first).to be_a(SiteAccommodation)
   end
 
+  it 'gets what else the listing sells online' do
+    stub_request(:get, "#{base_url}/site/offerings").with(headers: auth)
+                                                    .to_return(status: 200, headers: json,
+                                                               body: { services: [{ kind: 'grooming' }] }.to_json)
+
+    offerings = client.get_site_offerings
+    expect(offerings).to be_a(SiteOfferings)
+    expect(offerings['services'].first['kind']).to eq('grooming')
+  end
+
   it 'gets a page of reviews' do
     stub_request(:get, "#{base_url}/site/reviews?page=2")
       .with(headers: auth)
