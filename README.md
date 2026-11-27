@@ -221,6 +221,7 @@ site = UpwoofListings::SiteClient.new(ENV.fetch('UPWOOF_SITE_TOKEN'))
 site.get_site_config        # theme, palette, hosts, status, bookings_enabled
 site.get_site_listing       # name, contact details, address, opening hours, special hours, photos, rating, policies
 site.get_site_accommodations
+site.get_site_offerings      # services, training classes, memberships, gift cards, store credit, shop, cameras
 site.get_site_reviews(page: 2)
 site.get_site_availability(params: { check_in: '2026-12-07', check_out: '2026-12-09', dogs: 1, cats: 0 })
 site.create_site_booking_request(params: { check_in: '2026-12-07', check_out: '2026-12-09', accommodation_id: 3,
@@ -233,6 +234,13 @@ site.create_site_booking_request(params: { check_in: '2026-12-07', check_out: '2
 site.create_site_inquiry(params: { first_name: 'Ana', last_name: 'Hika', email: 'ana@example.com',
                                    phone: '+64 21 555 0100', message: 'Do you take puppies?' })
 ```
+
+`get_site_listing` also gives the logo as a small PNG (`favicon_url`), the listing's public UpWoof email addresses
+(`email_addresses`), its announcements from the last 30 days (`announcements`) and whether a temperament evaluation
+comes first (`evaluation`: `required`, `visits_offered`) (0.23.0). `get_site_offerings` (0.23.0) lists `services`
+(grooming, private lessons, tours and transport bookable online: `kind`, `name`, `duration_minutes`, `price`,
+`per_km_price`, `book_url`), `training_courses`, `memberships`, `shop_products`, `webcams`, and whether `gift_cards`,
+`store_credit` and the `shop` are sold online (`offered`, `url`); each URL is the UpWoof page that books or buys it.
 
 A booking request makes a reservation awaiting the listing's review. A refusal raises `ValidationError`, its
 `body['error']` one of `bookings_disabled`, `invalid`, `unavailable`, `breed_not_accepted`, `evaluation_required`,

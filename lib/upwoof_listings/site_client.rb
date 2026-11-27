@@ -43,6 +43,14 @@ module UpwoofListings
       Resources::SiteAccommodation.parse(request(:get, 'site/accommodations'))
     end
 
+    # GET /site/offerings: what else the listing sells online (services, training classes, membership plans, gift
+    # cards, store credit, the shop and its products, public live cameras), each with the UpWoof page that books or
+    # buys it.
+    # @return [UpwoofListings::Resources::SiteOfferings].
+    def get_site_offerings
+      Resources::SiteOfferings.parse(request(:get, 'site/offerings'))
+    end
+
     # rubocop:enable Naming/AccessorMethodName
 
     # GET /site/reviews: a page of published reviews (`reviews`, `page`, `total_pages`).
